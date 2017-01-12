@@ -19,9 +19,8 @@ function ServerObj(port) {
 function start(port, callback) {
     //TODO: declare some default for callback
     try{
+        console.debug().log("starting server with port: " + port + " and callback " + callback);
         return new ServerObj(port);
-
-
     } catch (err) {
         callback(err);
     }
