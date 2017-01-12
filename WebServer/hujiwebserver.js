@@ -1,50 +1,83 @@
 /**
  * Created by fimka on 06/01/2017.
  */
-let http = require("http");
+let net = require("net");
 let url = require("url");
 
-var hujiwebserver = function() {};
+let controllerSet = new Map();
 
-var ServerObj = function(port) {
+function router(socket)
+{
+    console.log('CONNECTED: ' + socket.remoteAddress +':'+ socket.remotePort);
+    socket.on('data', function(data)
+    {
+        console.log('DATA ' + socket.remoteAddress + ': ' + data);
+        const requestData = Buffer.from(data).toString();
+        let dataT = requestData.split(/,?\s+/);
+        if(dataT[2] === "HTTP/1.1")
+        {
+            console.log("It's HTTP man!");
+
+        }
+        socket.write('You said "' + requestData + '"');
+    });
+
+    //first step let's analyze the request to see if it's relevent to any of our relevent handlers
+    // console.log(request.url);
+    // let requestUrl = controllerSet.get(request.url);
+    // if(requestUrl)
+    // {
+    //     requestUrl(request,response,'');
+    // }
+    socket.on('close', function(data) {
+        console.log('CLOSED: ' + socket.remoteAddress +' '+ socket.remotePort);
+    });
+}
+
+function ServerObj(port) {
     this.port = port || 8080;
-    var server = http.createServer().listen(this.port);
-
-    function stop() {
+    let server = net.createServer(router).listen(this.port);
+    console.log('Server starting on socket: '+ this.port);
+    function stop()
+    {
         server.stop();
     }
-};
+}
 
-hujiwebserver.prototype.controllerSet = new Set();
+function defCallback(err){console.error(err)}
 
-hujiwebserver.prototype.start = function(port, callback) {
-    function defCallback(err) {
-        console.error(err)
-    }
+
+function start(port, callback) {
 
     this.callback = callback || defCallback;
     this.port = port;
-    try {
-        console.error("starting server with port: " + this.port + " and callback " + this.callback);
+    try{
+        console.log("starting server with port: " + this.port + " and callback " + this.callback);
         return new ServerObj(this.port);
     } catch (err) {
         this.callback(err);
     }
 
-};
+}
 
-hujiwebserver.prototype.use = function(command, middleware) {
+function use(command, middleware) {
     //TODO: default for middleware, command?
     this.command = command || "/";
     //Command should help us diffrinate treatment of URL's.
     // url.parse()..
+    controllerSet.set(command, middleware);
 
     return this;
 
+}
+
+function middleware(request, response, next)
+{
+
+}
+
+module.exports = {
+    use: use,
+    start: start,
+    middleware: middleware
 };
-
-hujiwebserver.prototype.middleware = function(request, response, next) {
-
-};
-
-module.exports = new hujiwebserver();
