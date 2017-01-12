@@ -2,11 +2,24 @@
  * Created by fimka on 06/01/2017.
  */
 
+var http = require("http");
+
+function ServerObj(port) {
+    this.port = port || 8080;
+    var server = http.createServer().listen(this.port);
+    function stop()
+    {
+        server.stop();
+    }
+
+
+}
+
+
 function start(port, callback) {
     //TODO: declare some default for callback
     try{
-        var http = require("http");
-        var serverObj = http.createServer();
+        return new ServerObj(port);
 
 
     } catch (err) {
