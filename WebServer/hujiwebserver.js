@@ -6,6 +6,31 @@ let url = require("url");
 
 let controllerSet = new Map();
 
+function httpRequest(properties, params, query, method) {
+    this.params = params;
+    this.query = query;
+    this.method = method;
+    this.cookies = cookies;
+    this.path = path;
+    this.host = host;
+
+    constructor(data)
+    {
+
+    };
+}
+
+function httpHandler(data){
+    let httpAction = data[0];
+    let httpUrl = data[1];
+    let requestUrl = controllerSet.get(httpUrl);
+    if(requestUrl)
+    {
+        requestUrl(request,response,'');
+    }
+}
+
+
 function router(socket)
 {
     console.log('CONNECTED: ' + socket.remoteAddress +':'+ socket.remotePort);
@@ -13,11 +38,12 @@ function router(socket)
     {
         console.log('DATA ' + socket.remoteAddress + ': ' + data);
         const requestData = Buffer.from(data).toString();
-        let dataT = requestData.split(/,?\s+/);
-        if(dataT[2] === "HTTP/1.1")
+        let dataT = requestData.split(/,?\s+/); //split buffer to parts - catch the type
+        switch(dataT[2])
         {
-            console.log("It's HTTP man!");
-
+            case "HTTP/1.1":
+                httpHandler(dataT);
+                break;
         }
         socket.write('You said "' + requestData + '"');
     });
@@ -36,7 +62,7 @@ function router(socket)
 
 function ServerObj(port) {
     this.port = port || 8080;
-    let server = net.createServer(router).listen(this.port);
+    let server = net.createServer(router).listen(this.port).setTimeout(25000);
     console.log('Server starting on socket: '+ this.port);
     function stop()
     {
@@ -48,7 +74,6 @@ function defCallback(err){console.error(err)}
 
 
 function start(port, callback) {
-
     this.callback = callback || defCallback;
     this.port = port;
     try{
@@ -63,12 +88,8 @@ function start(port, callback) {
 function use(command, middleware) {
     //TODO: default for middleware, command?
     this.command = command || "/";
-    //Command should help us diffrinate treatment of URL's.
-    // url.parse()..
     controllerSet.set(command, middleware);
-
     return this;
-
 }
 
 function middleware(request, response, next)
