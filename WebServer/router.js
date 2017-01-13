@@ -22,11 +22,14 @@ function extractHttpMethod(method)
  router.httpHandler = function(req) {
     // let httpAction = data[0];
     // let httpUrl = data[1];
-    // let requestUrl = this.controllerSet.get(httpUrl);
-    // if (requestUrl) {
-    //     // requestUrl(request,response,'');
-    // }
+    let requestUrl = this.controllerSet.get(req.path);
+    if (requestUrl) {
+        console.log('Found proper action');
+        // requestUrl(request,response,'');
+    }
 };
 
 
-module.exports = router;
+module.exports = {
+    router: router
+};

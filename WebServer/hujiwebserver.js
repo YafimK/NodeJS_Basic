@@ -23,7 +23,6 @@ function socketHandler(socket) {
     socket.on('end', function () {
         console.log('server disconnected');
         if (requestData != "") {
-            console.log("RequestData: " + requestData);
             let dataT = parser.parseDataSeqmant(requestData); //split buffer to parts - catch the type
             if (parser.isHttpRequest(dataT[0])) {
                 let httpReq = parser.httpParser(dataT);

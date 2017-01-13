@@ -5,7 +5,8 @@
 //This will be our factory for creating request, response objects.
 let url = require("url");
 
-var httpRequest = {
+let httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE'];
+let httpRequest = {
     reqHeaders: {},
     reqUrl: '',
     method: '',
