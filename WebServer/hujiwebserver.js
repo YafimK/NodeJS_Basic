@@ -21,8 +21,9 @@ function socketHandler(socket) {
         if (requestData != "") {
             console.log("RequestData: " + requestData);
             let dataT = parser.parseDataSeqmant(requestData); //split buffer to parts - catch the type
-           if(parser.isHttpRequest(dataT[0])){
-               httpHandler(dataT);
+            if (parser.isHttpRequest(dataT[0])) {
+                let httpReq = parser.httpParser(dataT);
+                router.httpHandler(httpReq);
             }
 
         }
@@ -45,14 +46,6 @@ function socketHandler(socket) {
         console.log('CLOSED: ' + socket.remoteAddress + ' ' + socket.remotePort);
     });
 
-
-    //first step let's analyze the request to see if it's relevent to any of our relevent handlers
-    // console.log(request.url);
-    // let requestUrl = controllerSet.get(request.url);
-    // if(requestUrl)
-    // {
-    //     requestUrl(request,response,'');
-    // }
 }
 
 function ServerObj(port) {
@@ -85,8 +78,7 @@ function start(port, callback) {
 
 function use(command, middleware) {
     //TODO: default for middleware, command?
-    this.command = command || "/";
-    controllerSet.set(command, middleware);
+
     return this;
 }
 

@@ -4,31 +4,48 @@
 
 //This will be our factory for creating request, response objects.
 
-function httpRequest() {
-    this.params = {};
-    function setRequestParams(params)
-    {
-        this.params = params;
+
+var httpRequest = {
+    headers: {},
+    url: '',
+    method: '',
+    setRequestParams(params) {
+        let requestLine = sl
+        let headers = params.slice(1);
+        let headerRegEx = /(\b[^:]+):([^']+)/g;
+        headers.forEach(function(row)
+        {
+            row.replace(headerRegEx, function ($0, param, value) {
+                headers[param] = value;
+            });
+        });
+    },
+    setBaseParams(request){
+        let requestType = str.trim().split(/\s+/g);
+
+    },
+    setHttpUrl(url){
+      this.url = url.parse(url)
+    },
+    setHttpMethod(method){
+        this.method = method;
     }
+};
+
+function httpParser(data){
+    console.log("Request for " + data + " received.");
 }
 
-
-function httpParser(){
-    let pathname = url.parse(requestData);
-    console.log("Request for " + pathname + " received.");
-}
-
-function parseDataSeqmant(data)
+function sliceDataSegment(data)
 {
-    let segmented = data.split('\n');
-    return segmented;
+    return data.split('\n').trim();
 }
 
 function isHttpRequest(str)
 {
-    let requestType = str.split(/\\s+/g);
-    let httpCheck = /^(HTTP\\.*)$/;
-    if(httpCheck.test(requestType[2]))
+    let requestType = str.trim().split(/\s+/g);
+    let httpCheck = /(HTTP)/g;
+    if(requestType[2].match(httpCheck).length > 0)
     {
         return true;
     }
@@ -41,6 +58,6 @@ function isHttpRequest(str)
 module.exports = {
     httpRequest: httpRequest,
     httpParser: httpParser,
-    parseDataSeqmant: parseDataSeqmant,
+    parseDataSeqmant: sliceDataSegment,
     isHttpRequest: isHttpRequest
 };
