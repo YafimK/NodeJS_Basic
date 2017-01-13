@@ -38,9 +38,17 @@ function socketHandler(socket) {
 
     var requestData = "";
 
-    socket.on('data', function (data) {
+    socket.on('data', function (data, err) {
         console.log('DATA ' + socket.remoteAddress + ': ' + data);
         requestData += data;
+        if(err)
+        {
+            throw err;
+        }
+
+        if(/(\r\n\r\n)/.test(requestData)){
+            socket.end();
+        }
     });
 
     socket.on('close', function (had_error) {
