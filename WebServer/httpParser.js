@@ -3,42 +3,54 @@
  */
 
 //This will be our factory for creating request, response objects.
-
+let url = require("url");
 
 var httpRequest = {
-    headers: {},
-    url: '',
+    reqHeaders: {},
+    reqUrl: '',
     method: '',
+    type: '',
     setRequestParams(params) {
-        let requestLine = sl
+        let reqLine = params[0];
+        this.setBaseParams(reqLine);
         let headers = params.slice(1);
-        let headerRegEx = /(\b[^:]+):([^']+)/g;
+        let headerRegEx = /(\b[^:]+):\s+([^']+)/g;
+        let headerList = {};
         headers.forEach(function(row)
         {
-            row.replace(headerRegEx, function ($0, param, value) {
-                headers[param] = value;
+            row.trim().replace(headerRegEx, function ($0, param, value) {
+               headerList[param] = value;
             });
         });
+        this.reqHeaders = headerList;
     },
     setBaseParams(request){
-        let requestType = str.trim().split(/\s+/g);
-
+        let requestType = request.trim().split(/\s+/g);
+        this.setHttpMethod(requestType[0]);
+        this.setHttpUrl(requestType[1]);
+        this.setHttpType(requestType[2]);
     },
-    setHttpUrl(url){
-      this.url = url.parse(url)
+    setHttpUrl(reqUrl){
+      this.reqUrl = url.parse(reqUrl)
     },
     setHttpMethod(method){
         this.method = method;
+    },
+    setHttpType(type){
+        this.type = type.trim();
     }
 };
 
 function httpParser(data){
-    console.log("Request for " + data + " received.");
+    let req = Object.create(httpRequest);
+    req.setRequestParams(data);
+    console.log("Request created: + " + req + " received.");
+    return req;
 }
 
 function sliceDataSegment(data)
 {
-    return data.split('\n').trim();
+    return data.split('\n');
 }
 
 function isHttpRequest(str)

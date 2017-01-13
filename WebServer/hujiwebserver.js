@@ -8,8 +8,12 @@ let router = require("./router");
 
 
 function socketHandler(socket) {
-    socket.setTimeout(25000, function (timeoutAction) {
+    socket.setKeepAlive(false);
+
+    socket.setTimeout(25000, function (timeoutAction)
+    {
         console.log("connection timed out!" + socket.host + ":" + socket.port);
+        socket.end();
     });
 
     socket.on('error', function (err) {
