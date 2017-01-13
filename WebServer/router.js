@@ -20,12 +20,12 @@ function extractHttpMethod(method)
 }
 
  router.httpHandler = function(req) {
-    let httpAction = data[0];
-    let httpUrl = data[1];
-    let requestUrl = this.controllerSet.get(httpUrl);
-    if (requestUrl) {
-        // requestUrl(request,response,'');
-    }
+    // let httpAction = data[0];
+    // let httpUrl = data[1];
+    // let requestUrl = this.controllerSet.get(httpUrl);
+    // if (requestUrl) {
+    //     // requestUrl(request,response,'');
+    // }
 };
 
 
