@@ -65,10 +65,10 @@ function checkMatch(curPath, reqCheckPath) {
 }
 
  router.prototype.httpHandler = function(req) {
-     let httpResponse = new httpResponse();
+     let httpRes = Object.create(httpResponse);
      let it = this.makeRouteHandleIterator(this.controllerSet, req.getPath());
      if(!it.done){
-         it.value.middleWare(req, new httpResponse(), it.next);
+         it.value.middleWare(req, new httpRes(), it.next);
      }
 
 };
