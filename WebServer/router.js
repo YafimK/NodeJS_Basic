@@ -32,7 +32,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path) {
                 for(let idx in currentArray){
                     let entry = currentArray[idx];
                     if(checkMatch(currentArray[idx].path, path)){
-                        nextIndex += idx;
+                        nextIndex += parseInt(idx);
                         return {value: entry, done: false}
                     }
                 }
