@@ -20,10 +20,6 @@ router.prototype.addRoute = function(path, middleWare)
 };
 
 
-function extractHttpMethod(method)
-{
-
-}
 
 function next(){
     "use strict";
@@ -38,7 +34,7 @@ function checkMatch(curPath, reqCheckPath){
 }
 
  router.prototype.httpHandler = function(req) {
-     this.stopIteration = true;
+     this.continueIteration = true;
      var i = 0
      var curPath = req.getPath()
      while(i < this.controllerSet.length && this.continueIteration) {
@@ -47,6 +43,7 @@ function checkMatch(curPath, reqCheckPath){
              this.continueIteration = false;
              entry.middleware
          }
+         i++;
      }
 
 
