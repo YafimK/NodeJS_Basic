@@ -150,6 +150,28 @@ httpResponse.prototype.getCookieHeader = function () {
 };
 
 /**
+ * returns a formmated headers body for the response
+ * @return {string}
+ */
+httpResponse.prototype.getHeadersBody = function () {
+    let headerBody = "";
+    this.headers.forEach(function (key, value) {
+        headerBody += key + ": " + value + "\r\n";
+    });
+    return headerBody;
+};
+
+/**
+ * return a formatted string of response status code and http type
+ * @return {string}
+ */
+httpResponse.prototype.getStatusLine = function () {
+  let statusLine = "";
+  statusLine = this.httpType + ' '+ this.statusCode + ' ' + this.statusMsg + "\r\n";
+  return statusLine;
+};
+
+/**
  * utility that does the actual write to the socket.
  * @param content
  * @return {httpResponse}
@@ -158,7 +180,11 @@ httpResponse.prototype.writeResponse = function(content){
     this.setContentLength(content);
     this.setContentType();
 
-
+    this.socket.write(this.getStatusLine());
+    this.socket.write(this.getHeadersBody());
+    this.socket.write(this.getCookieHeader());
+    this.socket.write(content);
+    this.socket.write("\r\n");
     return this;
 };
 
