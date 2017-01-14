@@ -21,8 +21,7 @@ function socketHandler(socket) {
         console.error(err);
     });
 
-    socket.on('end', function () {
-        console.log('server disconnected');
+    function treatRequest() {
         if (requestData != "") {
             let dataT = parser.parseDataSeqmant(requestData); //split buffer to parts - catch the type
             if (parser.isHttpRequest(dataT[0])) {
@@ -31,6 +30,11 @@ function socketHandler(socket) {
             }
 
         }
+    }
+
+    socket.on('end', function () {
+        console.log('server disconnected');
+        treatRequest();
         // socket.write('You said "' + requestData + '"');
     });
 
@@ -47,6 +51,7 @@ function socketHandler(socket) {
         }
 
         if(/(\r\n\r\n)/.test(requestData)){
+            treatRequest();
             socket.end();
         }
     });
