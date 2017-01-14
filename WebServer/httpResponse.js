@@ -161,6 +161,10 @@ httpResponse.prototype.getHeadersBody = function () {
     return headerBody;
 };
 
+httpResponse.prototype.send = function(content) {
+
+};
+
 /**
  * return a formatted string of response status code and http type
  * @return {string}

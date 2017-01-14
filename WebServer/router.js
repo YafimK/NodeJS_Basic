@@ -22,8 +22,7 @@ function extractHttpMethod(method)
 }
 
  router.prototype.httpHandler = function(req) {
-
-     let requestUrl = this.controllerSet.get(req.getPath());
+    let requestUrl = this.controllerSet.get(req.getPath());
     if (requestUrl) {
         console.log('Found proper action');
         // requestUrl(request,response,'');
