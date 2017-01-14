@@ -27,7 +27,7 @@ function socketHandler(socket) {
             let dataT = parser.parseDataSeqmant(requestData); //split buffer to parts - catch the type
             if (parser.isHttpRequest(dataT[0])) {
                 let httpReq = parser.httpParser(dataT);
-                router.httpHandler(httpReq);
+                router.httpHandler(httpReq, socket);
             }
 
         }

@@ -63,14 +63,13 @@ function checkMatch(curPath, reqCheckPath) {
     return reqCheckPath.match(regexOfHandlerObj)
 }
 
- router.prototype.httpHandler = function(req) {
-     let httpRes = Object.create(httpResponse);
+ router.prototype.httpHandler = function(req, socket) {
+     let httpRes = new httpResponse(socket, req.type);
      let it = this.makeRouteHandleIterator(this.controllerSet, req.getPath());
      let result = it.next();
      if(!result.done){
          result.value.middleWare(req, httpRes, result.next);
      }
-        //Do
 };
 
 

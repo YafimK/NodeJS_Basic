@@ -162,7 +162,8 @@ httpResponse.prototype.getHeadersBody = function () {
 };
 
 httpResponse.prototype.send = function(content) {
-
+    this.writeResponse(content);
+    return this;
 };
 
 /**
