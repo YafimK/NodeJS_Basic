@@ -32,7 +32,9 @@ function next(){
 
 function checkMatch(curPath, reqCheckPath){
     "use strict";
-    return true
+    if(curPath === reqCheckPath){
+        return true
+    }
 }
 
  router.prototype.httpHandler = function(req) {
