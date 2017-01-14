@@ -5,6 +5,7 @@ let net = require("net");
 let url = require("url");
 let parser = require("./httpParser");
 let router = require("./router").router;
+let httpResponse = require("./httpResponse");
 
 
 function socketHandler(socket) {

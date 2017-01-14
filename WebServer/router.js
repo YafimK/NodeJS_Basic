@@ -2,6 +2,7 @@
  * Created by fimka on 13/01/2017.
  */
 
+"use strict";
 
 
 
@@ -22,12 +23,10 @@ router.prototype.addRoute = function(path, middleWare)
 
 
 function next(){
-    "use strict";
     this.continueIteration = true;
 }
 
 function checkMatch(curPath, reqCheckPath){
-    "use strict";
     if(curPath === reqCheckPath){
         return true
     }
@@ -38,10 +37,9 @@ function checkMatch(curPath, reqCheckPath){
      var i = 0
      var curPath = req.getPath()
      while(i < this.controllerSet.length && this.continueIteration) {
-         "use strict";
          if(checkMatch(entry.path,curPath)){
              this.continueIteration = false;
-             entry.middleware
+             this.controllerSet[i].
          }
          i++;
      }
