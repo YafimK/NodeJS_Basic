@@ -68,7 +68,7 @@ function checkMatch(curPath, reqCheckPath) {
      let it = this.makeRouteHandleIterator(this.controllerSet, req.getPath());
      let result = it.next();
      if(!result.done){
-         result.value.middleWare(req, new httpRes(), result.next);
+         result.value.middleWare(req, httpRes, result.next);
      }
         //Do
 };
