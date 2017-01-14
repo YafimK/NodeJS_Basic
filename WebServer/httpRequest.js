@@ -38,7 +38,10 @@ var httpRequest = {
     },
     setHttpType(type){
         this.type = type.trim();
+    },
+    getPath(){
+        return this.reqUrl.path;
     }
 };
 
-exports.httpRequest = httpRequest;
+module.exports = httpRequest;

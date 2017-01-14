@@ -3,11 +3,12 @@
  */
 
 
-var router = {
-    controllerSet: new Map(),
+let router = function() {
 };
 
-router.addRoute = function(path, middleWare)
+router.prototype.controllerSet = new Map();
+
+router.prototype.addRoute = function(path, middleWare)
 {
     //TODO: check if middleware is function with typeof
     this.path = path || "/";
@@ -20,8 +21,9 @@ function extractHttpMethod(method)
 
 }
 
- router.httpHandler = function(req) {
-    let requestUrl = this.controllerSet.get(req.path);
+ router.prototype.httpHandler = function(req) {
+
+     let requestUrl = this.controllerSet.get(req.getPath());
     if (requestUrl) {
         console.log('Found proper action');
         // requestUrl(request,response,'');
@@ -32,6 +34,4 @@ function extractHttpMethod(method)
 };
 
 
-module.exports = {
-    router: router
-};
+exports.router = new router();

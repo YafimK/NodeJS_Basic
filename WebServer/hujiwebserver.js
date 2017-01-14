@@ -4,7 +4,7 @@
 let net = require("net");
 let url = require("url");
 let parser = require("./httpParser");
-let router = require("./router");
+let router = require("./router").router;
 
 
 function socketHandler(socket) {
@@ -89,6 +89,7 @@ function start(port, callback) {
 
 function use(command, middleware) {
     //TODO: default for middleware, command?
+    router.addRoute(command, middleware);
 
     return this;
 }
