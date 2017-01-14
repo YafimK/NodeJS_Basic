@@ -28,7 +28,7 @@ function socketHandler(socket) {
                 let httpReq = parser.httpParser(dataT);
                 router.httpHandler(httpReq, socket);
             }
-
+            requestData = "";
         }
     }
 
