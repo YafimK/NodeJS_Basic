@@ -2,9 +2,11 @@
  * Created by fimka on 14/01/2017.
  */
 let STATUS_CODES = require('./httpStandard');
+
 // set(), status(), get() , cookie(), send() and json() .
-var httpResponse = function (socket){
+var httpResponse = function (socket, httpType){
     this.socket = socket;
+    this.httpType = httpType;
 };
 
 httpResponse.prototype.cookies = new Map();
@@ -22,12 +24,20 @@ httpResponse.prototype.get = function (headerName) {
     return this.headers.get(headerName);
 };
 
-httpResponse.prototype.json = function()
+/**
+ * sends a json response with body given as parameter
+ * @return {httpResponse}
+ */
+httpResponse.prototype.json = function(body)
 {
+    //application/json
+    this.setContentType("application/json");
+    this.writeResponse(JSON.stringify(body));
     //return create body as json.
 
     return this;
 };
+
 /**
  * Allows to set single or multiple headers by  passing header object.
  * @param field
@@ -54,6 +64,7 @@ httpResponse.prototype.set = function (field, value) {
 
     return this;
 };
+
 /**
  * sets the status code of the response
  * @param statusCode
@@ -67,7 +78,9 @@ httpResponse.prototype.status = function (statusCode) {
   else {
       throw 'No such status code!';
   }
+  return this;
 };
+
 /**
  *  set cookie name to value.
  *  The value parameter may be a string or JSON object
@@ -77,7 +90,75 @@ httpResponse.prototype.status = function (statusCode) {
  * @return {httpResponse}
  */
 httpResponse.prototype.cookie = function (name, value, options) {
-    this.cookies.set(name,{value:value, options:options});
+    this.cookies.set(name,{value: value, options: options});
+    return this;
+};
+
+/**
+ * checks if content length exists in headers and if not sets it by the content length
+ * @param content
+ */
+httpResponse.prototype.setContentLength = function(content) {
+    if (!this.headers.has("Content-Length")) {
+        if (content) {
+            this.set("Content-Length", content.length);
+        }
+        else {
+            this.set("Content-Length", 0)
+        }
+    }
+    return this;
+};
+
+/**
+ * set Content-Type field to the given value or default it to text/html
+ * @param contentType
+ * @return {httpResponse}
+ */
+httpResponse.prototype.setContentType = function(contentType) {
+    if (!this.headers.has("Content-Type")) {
+        if (contentType) {
+            this.set("Content-Type", contentType);
+        }
+        else {
+            this.set("Content-Type", 'text/html');
+        }
+    }
+    return this;
+};
+
+/**
+ * returns a formatted cookie header ready to be sent.
+ * @return {string}
+ */
+httpResponse.prototype.getCookieHeader = function () {
+    let cookieHeader = '';
+    if(this.cookies.size != 0)
+    {
+        cookieHeader = 'Set-Cookie: '
+    }
+    this.cookies.forEach(function (value, key) {
+        cookieHeader += key + "=" + value.value;
+        for(let option in value.options)
+        {
+            cookieHeader += ";" +  + value.options[option];
+        }
+        cookieHeader += "\r\n";
+    });
+
+    return cookieHeader;
+};
+
+/**
+ * utility that does the actual write to the socket.
+ * @param content
+ * @return {httpResponse}
+ */
+httpResponse.prototype.writeResponse = function(content){
+    this.setContentLength(content);
+    this.setContentType();
+
+
     return this;
 };
 
