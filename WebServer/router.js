@@ -22,6 +22,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
     let nextIndex = 0;
     let currentArray;
 
+
     return {
         next: function () {
             currentArray = originalArr.slice(nextIndex);
@@ -32,7 +33,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
                         nextIndex += parseInt(idx) + 1;
                         let response = new httpResponse(socket, req.type);
                         currentArray[idx].middleWare(req, response, this.next);
-                        return {value: entry, done: false}
+                        return {done: false}
                     }
                 }
             }

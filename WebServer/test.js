@@ -18,11 +18,16 @@ webserver1.use( '/jenkins', function(rq,rs,nxt){ rs.send("ewewe") }).start(8080)
 webserver1.use('/hello', function (req, res, next){
     res.send("hello ");
     next();
+
 });
 
 webserver1.use('/hello/world', function (req, res, next){
     res.set();
     res.send("world!");
-    res.end();
+
 });
+
+
+
+
 
