@@ -35,7 +35,6 @@ function socketHandler(socket) {
     socket.on('end', function () {
         console.log('server disconnected');
         treatRequest();
-        // socket.write('You said "' + requestData + '"');
     });
 
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);

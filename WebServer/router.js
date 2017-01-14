@@ -9,9 +9,7 @@ let httpResponse = require('./httpResponse');
 let router = function() {
 };
 
-
 router.prototype.controllerSet =  [];
-router.prototype.continueIteration = true;
 
 router.prototype.addRoute = function(path, middleWare)
 {
@@ -20,11 +18,9 @@ router.prototype.addRoute = function(path, middleWare)
     this.controllerSet.push({path: path, middleWare: middleWare});
 };
 
-router.prototype.makeRouteHandleIterator = function(originalArr, path) {
+router.prototype.makeRouteHandleIterator = function(originalArr, path, req, response) {
     let nextIndex = 0;
     let currentArray;
-    //find all relevant routes
-
     return {
         next: function () {
             currentArray = originalArr.slice(nextIndex);
@@ -33,6 +29,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path) {
                     let entry = currentArray[idx];
                     if(checkMatch(currentArray[idx].path, path)){
                         nextIndex += parseInt(idx);
+                        currentArray[idx].middleWare(req, response, this.next);
                         return {value: entry, done: false}
                     }
                 }
@@ -63,13 +60,14 @@ function checkMatch(curPath, reqCheckPath) {
     return reqCheckPath.match(regexOfHandlerObj)
 }
 
+var nexter = function() {
+        return this.iter.next();
+};
+
  router.prototype.httpHandler = function(req, socket) {
      let httpRes = new httpResponse(socket, req.type);
-     let it = this.makeRouteHandleIterator(this.controllerSet, req.getPath());
+     let it = this.makeRouteHandleIterator(this.controllerSet, req.getPath(), httpRes, req);
      let result = it.next();
-     if(!result.done){
-         result.value.middleWare(req, httpRes, result.next);
-     }
 };
 
 
