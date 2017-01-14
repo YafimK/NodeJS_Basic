@@ -7,10 +7,11 @@ var router = {
     controllerSet: new Map(),
 };
 
-router.addRoute = function(path)
+router.addRoute = function(path, middleWare)
 {
+    //TODO: check if middleware is function with typeof
     this.path = path || "/";
-    controllerSet.set(path, middleware);
+    this.controllerSet.set(path, middleWare);
 };
 
 
@@ -20,12 +21,13 @@ function extractHttpMethod(method)
 }
 
  router.httpHandler = function(req) {
-    // let httpAction = data[0];
-    // let httpUrl = data[1];
     let requestUrl = this.controllerSet.get(req.path);
     if (requestUrl) {
         console.log('Found proper action');
         // requestUrl(request,response,'');
+    }
+    else {
+        // let response =
     }
 };
 
