@@ -29,11 +29,10 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path) {
         next: function () {
             currentArray = originalArr.slice(nextIndex);
             if(nextIndex < originalArr.length){
-                let currentIdx = 0;
-                for(let entry in currentArray){
-                    currentIdx++;
-                    if(checkMatch(entry.path, path)){
-                        nextIndex += currentIdx;
+                for(let idx in currentArray){
+                    let entry = currentArray[idx];
+                    if(checkMatch(currentArray[idx].path, path)){
+                        nextIndex += idx;
                         return {value: entry, done: false}
                     }
                 }
@@ -67,6 +66,7 @@ function checkMatch(curPath, reqCheckPath) {
  router.prototype.httpHandler = function(req) {
      let httpRes = Object.create(httpResponse);
      let it = this.makeRouteHandleIterator(this.controllerSet, req.getPath());
+     it.next();
      if(!it.done){
          it.value.middleWare(req, new httpRes(), it.next);
      }
