@@ -65,7 +65,8 @@ setTimeout(function() {
 
 
 setTimeout(function() {
-    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/'}, function(response) {console.log('Req Func3');response.on('data', function(data){console.log(data.toString());});}).end();
+    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/'}, function(response) {console.log('Req Func3');
+    response.on('data', function(data){console.log(data.toString());});}).end();
     }, 300);
 
 // Different methods we need to support GET/POST/PUT/DELETE/OPTIONS/TRACE

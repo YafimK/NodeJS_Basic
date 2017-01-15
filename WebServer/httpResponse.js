@@ -163,11 +163,11 @@ httpResponse.prototype.getHeadersBody = function () {
 
 httpResponse.prototype.send = function(content) {
     if(!content || content === null){
-        content = ''
-        this.setContentType("'text/html'");
+        content = '';
+        this.setContentType('text/html');
     }
     if(typeof content === 'string'){
-        this.setContentType("'text/html'");
+        this.setContentType('text/html');
     }
 
     else if(typeof content === 'Object'){
@@ -178,7 +178,6 @@ httpResponse.prototype.send = function(content) {
     }
 
     this.writeResponse(content);
-    this.socket.on('end', function(){})
     return this;
 };
 
@@ -204,8 +203,9 @@ httpResponse.prototype.writeResponse = function(content){
     this.socket.write(this.getStatusLine());
     this.socket.write(this.getHeadersBody());
     this.socket.write(this.getCookieHeader());
-    this.socket.write(content);
+    this.socket.write(content, this.get('Content-Type'));
     this.socket.write("\r\n");
+    this.socket.end();
     return this;
 };
 

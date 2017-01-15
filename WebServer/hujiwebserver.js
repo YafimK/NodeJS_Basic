@@ -40,7 +40,7 @@ function socketHandler(socket) {
     var requestData = "";
 
     socket.on('data', function (data, err) {
-        console.log('DATA ' + socket.remoteAddress + ': ' + data);
+        console.log('recieved DATA ' + socket.remoteAddress + ': ' + data);
         requestData += data;
         if(err)
         {
