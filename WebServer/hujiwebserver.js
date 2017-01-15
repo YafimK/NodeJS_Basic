@@ -10,11 +10,11 @@ let httpResponse = require("./httpResponse");
 
 function socketHandler(socket) {
     socket.setKeepAlive(false);
-    socket.setTimeout(25000, function (timeoutAction)
-    {
-        console.log("connection timed out!" + socket.host + ":" + socket.port);
-        socket.end();
-    });
+    // socket.setTimeout(25000, function (timeoutAction)
+    // {
+    //     console.log("connection timed out!" + socket.host + ":" + socket.port);
+    //     socket.end();
+    // });
 
     socket.on('error', function (err) {
         console.error(err);
@@ -31,16 +31,16 @@ function socketHandler(socket) {
         }
     }
 
-    // socket.on('end', function () {
-    //     console.log('server disconnected');
-    // });
+    socket.on('end', function () {
+        console.log('server disconnected');
+    });
 
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
     var requestData = "";
 
     socket.on('data', function (data, err) {
-        console.log('recieved DATA ' + socket.remoteAddress + ': ' + data);
+        console.log('received DATA ' + socket.remoteAddress + ': ' + data);
         requestData += data;
         if(err)
         {
@@ -49,7 +49,6 @@ function socketHandler(socket) {
 
         if(/(\r\n\r\n)/.test(requestData)){
             treatRequest();
-            //socket.end();//TODO we need to end?
         }
     });
 

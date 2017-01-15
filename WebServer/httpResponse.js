@@ -31,11 +31,9 @@ httpResponse.prototype.get = function (headerName) {
 httpResponse.prototype.json = function(body)
 {
     //application/json
-    this.setContentType("application/json");
-    this.writeResponse(JSON.stringify(body));
+    this.setContentType('application/json');
     //return create body as json.
-    this.socket.on('end', null)
-    return this;
+    return this.writeResponse(JSON.stringify(body));
 };
 
 /**
@@ -99,12 +97,12 @@ httpResponse.prototype.cookie = function (name, value, options) {
  * @param content
  */
 httpResponse.prototype.setContentLength = function(content) {
-    if (!this.headers.has("Content-Length")) {
+    if (!this.headers.has('Content-Length')) {
         if (content) {
-            this.set("Content-Length", content.length);
+            this.set('Content-Length', content.length);
         }
         else {
-            this.set("Content-Length", 0)
+            this.set('Content-Length', 0)
         }
     }
     return this;
@@ -116,12 +114,12 @@ httpResponse.prototype.setContentLength = function(content) {
  * @return {httpResponse}
  */
 httpResponse.prototype.setContentType = function(contentType) {
-    if (!this.headers.has("Content-Type")) {
+    if (!this.headers.has('Content-Type')) {
         if (contentType) {
-            this.set("Content-Type", contentType);
+            this.set('Content-Type', contentType);
         }
         else {
-            this.set("Content-Type", 'text/plain');
+            this.set('Content-Type', 'text/plain');
         }
     }
     return this;
@@ -138,12 +136,12 @@ httpResponse.prototype.getCookieHeader = function () {
         cookieHeader = 'Set-Cookie: '
     }
     this.cookies.forEach(function (value, key) {
-        cookieHeader += key + "=" + value.value;
+        cookieHeader += key + '=' + value.value;
         for(let option in value.options)
         {
-            cookieHeader += ";" +  + value.options[option];
+            cookieHeader += ';' +  + value.options[option];
         }
-        cookieHeader += "\r\n";
+        cookieHeader += '\r\n';
     });
 
     return cookieHeader;
@@ -154,9 +152,9 @@ httpResponse.prototype.getCookieHeader = function () {
  * @return {string}
  */
 httpResponse.prototype.getHeadersBody = function () {
-    let headerBody = "";
-    this.headers.forEach(function (key, value) {
-        headerBody += key + ": " + value + "\r\n";
+    let headerBody = '';
+    this.headers.forEach(function (value, key) {
+        headerBody += (key + ': ' + value + '\r\n');
     });
     return headerBody;
 };
@@ -186,8 +184,8 @@ httpResponse.prototype.send = function(content) {
  * @return {string}
  */
 httpResponse.prototype.getStatusLine = function () {
-  let statusLine = "";
-  statusLine = this.httpType + ' '+ this.statusCode + ' ' + this.statusMsg + "\r\n";
+  let statusLine = '';
+  statusLine = this.httpType + ' '+ this.statusCode + ' ' + this.statusMsg + '\r\n';
   return statusLine;
 };
 
@@ -199,12 +197,13 @@ httpResponse.prototype.getStatusLine = function () {
 httpResponse.prototype.writeResponse = function(content){
     this.setContentLength(content);
     this.setContentType();
+    let test = this.getStatusLine() + this.getHeadersBody() + this.getCookieHeader() + content;
 
     this.socket.write(this.getStatusLine());
     this.socket.write(this.getHeadersBody());
     this.socket.write(this.getCookieHeader());
     this.socket.write(content);//Content-Type'));
-    this.socket.write("\r\n\r\n");
+    // this.socket.write('\r\n');
     this.socket.end();
     return this;
 };

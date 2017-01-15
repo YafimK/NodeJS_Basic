@@ -42,7 +42,7 @@ client.connect(8080, '127.0.0.1', function() {
 // data is what the server sent to this socket
 client.on('data', function(data) {
 
-    console.log('DATA: ' + data);
+    console.log('sent DATA: ' + data);
     // Close the client socket completely
     client.destroy();
 
