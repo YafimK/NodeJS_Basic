@@ -13,16 +13,16 @@
 
 let webserver1 = require("./hujiwebserver");
 // webserver.use('add/:a/:b', function(rq,rs){rs.send(rq.params.a+rq.params.b)}).start(8080);
-webserver1.use( '/jenkins', function(rq,rs,nxt){ rs.send("ewewe") }).start(8081);
+webserver1.use( '/jenkins', function(rq,rs,nxt){ rs.send("ewewe") }).start(8080);
 
 webserver1.use('/hello', function (req, res, next){
-    res.send("hello ");
+    console.log("inside hello ");
     next();
 
 });
 
 webserver1.use('/hello/world', function (req, res, next){
-    res.set();
+    //res.set();
     res.send("world!");
 
 });

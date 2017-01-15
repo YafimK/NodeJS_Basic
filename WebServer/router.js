@@ -61,7 +61,7 @@ function checkMatch(curPath, reqCheckPath) {
 }
 
  router.prototype.httpHandler = function(req, socket) {
-     this.makeRouteHandleIterator(this.controllerSet, req.getPath(), req, socket).next();
+     this.makeRouteHandleIterator(this.controllerSet, req.path, req, socket);
 };
 
 

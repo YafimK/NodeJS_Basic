@@ -34,7 +34,7 @@ httpResponse.prototype.json = function(body)
     this.setContentType("application/json");
     this.writeResponse(JSON.stringify(body));
     //return create body as json.
-
+    this.socket.on('end', null)
     return this;
 };
 
@@ -162,7 +162,23 @@ httpResponse.prototype.getHeadersBody = function () {
 };
 
 httpResponse.prototype.send = function(content) {
+    if(!content || content === null){
+        content = ''
+        this.setContentType("'text/html'");
+    }
+    if(typeof content === 'string'){
+        this.setContentType("'text/html'");
+    }
+
+    else if(typeof content === 'Object'){
+        return this.json(content)
+    }
+    else{
+        throw TypeError("Doesn't recognize type")
+    }
+
     this.writeResponse(content);
+    this.socket.on('end', function(){})
     return this;
 };
 

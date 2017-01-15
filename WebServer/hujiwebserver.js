@@ -31,10 +31,9 @@ function socketHandler(socket) {
         }
     }
 
-    socket.on('end', function () {
-        console.log('server disconnected');
-        treatRequest();
-    });
+    // socket.on('end', function () {
+    //     console.log('server disconnected');
+    // });
 
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
@@ -50,7 +49,7 @@ function socketHandler(socket) {
 
         if(/(\r\n\r\n)/.test(requestData)){
             treatRequest();
-            socket.end();//TODO we need to end?
+            //socket.end();//TODO we need to end?
         }
     });
 

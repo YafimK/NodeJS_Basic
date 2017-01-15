@@ -73,6 +73,7 @@ var httpRequest = {
     }
 
     //TODO need to add is() function
+    //TODO add param()
 };
 
 
