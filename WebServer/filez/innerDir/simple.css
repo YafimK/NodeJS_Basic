@@ -1,0 +1,57 @@
+body {
+    margin: 0 10% 0 10%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.header, .footer {
+    text-align: center;
+    width: 50%;
+    min-width: 600px;
+    margin: auto;
+}
+
+.header > h1 {
+    font-weight: normal;
+}
+
+.header_link {
+    text-decoration: none;
+}
+
+.id_number::before {
+    content: 'ID';
+}
+
+.profile-container {
+    margin-bottom: 10px;
+}
+
+.content {
+    display: inline-block;
+    width: 78%;
+}
+
+.sidebar {
+    display: inline-block;
+    width: 20%;
+}
+
+.clear {
+    clear: both;
+}
+
+.profile_img {
+    float: left;
+    margin: 10px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.profile_txt {
+    line-height: 1.5;
+}
+
+.site_list {
+    list-style-type: lower-greek;
+}
