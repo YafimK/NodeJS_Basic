@@ -10,7 +10,6 @@ let httpResponse = require("./httpResponse");
 
 function socketHandler(socket) {
     socket.setKeepAlive(false);
-
     socket.setTimeout(25000, function (timeoutAction)
     {
         console.log("connection timed out!" + socket.host + ":" + socket.port);
@@ -51,7 +50,7 @@ function socketHandler(socket) {
 
         if(/(\r\n\r\n)/.test(requestData)){
             treatRequest();
-            socket.end();
+            socket.end();//TODO we need to end?
         }
     });
 
