@@ -7,6 +7,7 @@ let url = require("url");
 var httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE'];
 var httpRequest = {
     reqHeaders: {},
+    cookies: '',
     reqUrl: '',
     method: '',
     type: '',
@@ -22,6 +23,10 @@ var httpRequest = {
                 headerList[param] = value;
             });
         });
+        if(headerList['Set-Cookie']){
+            this.cookies = headerList['Set-cookie'].value;
+            //TODO: remove from headerlist the 'Set-Cookie';
+        }
         this.reqHeaders = headerList;
     },
     setBaseParams(request){

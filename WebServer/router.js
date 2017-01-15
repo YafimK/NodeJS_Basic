@@ -35,40 +35,9 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
             }
         }
         return {done: true};
-    }
-
-    return next()
-
-
-
-
-
+    };
+    return next();
 };
-
-// router.prototype.makeRouteHandleIterator = function(originalArr, path, req, socket) {
-//     nextIndex = 0
-//     var next = function() {
-//         //currentArray = originalArr.slice(nextIndex);
-//         if(nextIndex < router.prototype.controllerSet.length){
-//             let idx = nextIndex
-//             while(idx <  router.prototype.controllerSet.length){
-//                 let entry = router.prototype.controllerSet[idx];
-//                 if(checkMatch(router.prototype.controllerSet[idx].path, path)){
-//                     nextIndex += parseInt(idx) + 1;
-//                     let response = new httpResponse(socket, req.type);
-//                     originalArr[idx].middleWare(req, response, next);
-//                     return {done: false}
-//                 }
-//                 idx += parseInt(idx) + 1;
-//             }
-//         }
-//         return {done: true};
-//     }
-//
-//     return next()
-//
-// };
-
 
 function checkMatch(curPath, reqCheckPath) {
     var regexOfHandler = "^";
