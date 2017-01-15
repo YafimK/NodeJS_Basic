@@ -121,7 +121,7 @@ httpResponse.prototype.setContentType = function(contentType) {
             this.set("Content-Type", contentType);
         }
         else {
-            this.set("Content-Type", 'text/html');
+            this.set("Content-Type", 'text/plain');
         }
     }
     return this;
@@ -203,7 +203,7 @@ httpResponse.prototype.writeResponse = function(content){
     this.socket.write(this.getStatusLine());
     this.socket.write(this.getHeadersBody());
     this.socket.write(this.getCookieHeader());
-    this.socket.write(content, this.get('Content-Type'));
+    this.socket.write(content);//Content-Type'));
     this.socket.write("\r\n");
     this.socket.end();
     return this;
