@@ -12,8 +12,8 @@ var httpResponse = function (socket, httpType){
 httpResponse.prototype.cookies = new Map();
 httpResponse.prototype.headers = new Map();
 httpResponse.prototype.body = '';
-httpResponse.prototype.statusCode = '';
-httpResponse.prototype.statusMsg = '';
+httpResponse.prototype.statusCode = 200;
+httpResponse.prototype.statusMsg = 'OK';
 
 /**
  * get header value
@@ -204,7 +204,7 @@ httpResponse.prototype.writeResponse = function(content){
     this.socket.write(this.getHeadersBody());
     this.socket.write(this.getCookieHeader());
     this.socket.write(content);//Content-Type'));
-    this.socket.write("\r\n");
+    this.socket.write("\r\n\r\n");
     this.socket.end();
     return this;
 };
