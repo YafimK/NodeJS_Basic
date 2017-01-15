@@ -21,26 +21,54 @@ router.prototype.addRoute = function(path, middleWare)
 router.prototype.makeRouteHandleIterator = function(originalArr, path, req, socket) {
     let nextIndex = 0;
     let currentArray;
-
-
-    return {
-        next: function () {
-            currentArray = originalArr.slice(nextIndex);
-            if(nextIndex < originalArr.length){
-                for(let idx in currentArray){
-                    let entry = currentArray[idx];
-                    if(checkMatch(currentArray[idx].path, path)){
-                        nextIndex += parseInt(idx) + 1;
-                        let response = new httpResponse(socket, req.type);
-                        currentArray[idx].middleWare(req, response, this.next);
-                        return {done: false}
-                    }
+    var next =  function () {
+        currentArray = originalArr.slice(nextIndex);
+        if(nextIndex < originalArr.length){
+            for(let idx in currentArray){
+                let entry = currentArray[idx];
+                if(checkMatch(currentArray[idx].path, path)){
+                    nextIndex += parseInt(idx) + 1;
+                    let response = new httpResponse(socket, req.type);
+                    currentArray[idx].middleWare(req, response, next);
+                    return {done: false}
                 }
             }
-            return {done: true};
         }
+        return {done: true};
     }
+
+    return next()
+
+
+
+
+
 };
+
+// router.prototype.makeRouteHandleIterator = function(originalArr, path, req, socket) {
+//     nextIndex = 0
+//     var next = function() {
+//         //currentArray = originalArr.slice(nextIndex);
+//         if(nextIndex < router.prototype.controllerSet.length){
+//             let idx = nextIndex
+//             while(idx <  router.prototype.controllerSet.length){
+//                 let entry = router.prototype.controllerSet[idx];
+//                 if(checkMatch(router.prototype.controllerSet[idx].path, path)){
+//                     nextIndex += parseInt(idx) + 1;
+//                     let response = new httpResponse(socket, req.type);
+//                     originalArr[idx].middleWare(req, response, next);
+//                     return {done: false}
+//                 }
+//                 idx += parseInt(idx) + 1;
+//             }
+//         }
+//         return {done: true};
+//     }
+//
+//     return next()
+//
+// };
+
 
 function checkMatch(curPath, reqCheckPath) {
     var regexOfHandler = "^";
