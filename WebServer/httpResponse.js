@@ -1,7 +1,7 @@
 /**
  * Created by fimka on 14/01/2017.
  */
-let STATUS_CODES = require('./httpStandard');
+let STATUS_CODES = require('./httpStandard').STATUS_CODES;
 
 // set(), status(), get() , cookie(), send() and json() .
 var httpResponse = function (socket, httpType){
@@ -100,6 +100,7 @@ httpResponse.prototype.setContentLength = function(content) {
     if (!this.headers.has('Content-Length')) {
         if (content) {
             this.set('Content-Length', content.length);
+            this.set('Content-Length', Buffer.byteLength(content));
         }
         else {
             this.set('Content-Length', 0)
@@ -160,20 +161,7 @@ httpResponse.prototype.getHeadersBody = function () {
 };
 
 httpResponse.prototype.send = function(content) {
-    if(!content || content === null){
-        content = '';
-        this.setContentType('text/html');
-    }
-    if(typeof content === 'string'){
-        this.setContentType('text/html');
-    }
 
-    else if(typeof content === 'Object'){
-        return this.json(content)
-    }
-    else{
-        throw TypeError("Doesn't recognize type")
-    }
 
     this.writeResponse(content);
     return this;
@@ -189,20 +177,47 @@ httpResponse.prototype.getStatusLine = function () {
   return statusLine;
 };
 
+
+
 /**
  * utility that does the actual write to the socket.
  * @param content
  * @return {httpResponse}
  */
 httpResponse.prototype.writeResponse = function(content){
+    let chunk = content;
+    if(!content || content === null){
+        content = '';
+        this.setContentType('text/html');
+    }
+    if(typeof content === 'string'){
+        this.setContentType('text/html');
+    }
+
+    else if(typeof content === 'Object'){
+        return this.json(content)
+    }
+    else{
+        throw TypeError("Doesn't recognize type")
+    }
+
+    if (204 === this.statusCode || 304 === this.statusCode) {
+        this.removeHeader('Content-Type');
+        this.removeHeader('Content-Length');
+        this.removeHeader('Transfer-Encoding');
+        chunk = '';
+    }
+
     this.setContentLength(content);
     this.setContentType();
-    let test = this.getStatusLine() + this.getHeadersBody() + this.getCookieHeader() + content;
+
+    let test = this.getStatusLine() + this.getHeadersBody() + this.getCookieHeader() + '\r\n' + chunk;
 
     this.socket.write(this.getStatusLine());
     this.socket.write(this.getHeadersBody());
     this.socket.write(this.getCookieHeader());
-    this.socket.write(content);//Content-Type'));
+    this.socket.write('\r\n');
+    this.socket.write(chunk);//Content-Type'));
     // this.socket.write('\r\n');
     this.socket.end();
     return this;
