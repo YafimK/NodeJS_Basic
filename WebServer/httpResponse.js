@@ -97,15 +97,13 @@ httpResponse.prototype.cookie = function (name, value, options) {
  * @param content
  */
 httpResponse.prototype.setContentLength = function(content) {
-    if (!this.headers.has('Content-Length')) {
         if (content) {
-            this.set('Content-Length', content.length);
-            this.set('Content-Length', Buffer.byteLength(content));
+            // this.set("Content-Length", content.length);
+            this.set("Content-Length", Buffer.byteLength(content));
         }
         else {
-            this.set('Content-Length', 0)
+            this.set("Content-Length", "0")
         }
-    }
     return this;
 };
 
@@ -161,8 +159,6 @@ httpResponse.prototype.getHeadersBody = function () {
 };
 
 httpResponse.prototype.send = function(content) {
-
-
     this.writeResponse(content);
     return this;
 };
@@ -203,7 +199,7 @@ httpResponse.prototype.writeResponse = function(content){
 
     if (204 === this.statusCode || 304 === this.statusCode) {
         this.removeHeader('Content-Type');
-        this.removeHeader('Content-Length');
+        this.removeHeader("Content-Length");
         this.removeHeader('Transfer-Encoding');
         chunk = '';
     }

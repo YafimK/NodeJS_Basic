@@ -3,9 +3,10 @@ var constants = require('./httpConstants');
 var fs = require('fs');
 
 var server = myHTTPserver
-	//.use('/add/:a/:b/c/:d/e.html', function(rq,rs,n) {console.warn("reponse is start");console.log('USE Func1');rs.send(parseInt(rq.reqHeaders.a)+parseInt(rq.reqHeaders.b)+parseInt(rq.reqHeaders.d));})
+	// .use('/add/:a/:b/c/:d/e.html', function(rq,rs,n) {console.warn("reponse is start");console.log('USE Func1');rs.send(parseInt(rq.reqHeaders.a)+parseInt(rq.reqHeaders.b)+parseInt(rq.reqHeaders.d));})
     .use('/add/:a/:b/c/:d/e.html', function(rq,rs,n) {
-        console.warn("reponse is start");console.log('USE Func1');
+        console.warn("reponse is start");
+        console.log('USE Func1');
         rs.send("papo");
     })
 	.use('/add/a/b', function(rq,rs,n) {console.warn("reponse is start");console.log('USE Func2');rs.send(rq.path);})
@@ -52,38 +53,38 @@ setTimeout(function() {
     http.request({host: 'localhost', port: 8080,  path: '/add/1/2/c/3/e.html'}, function(response)
     {
         console.warn("reponse is start");console.log('Req Func1');
-        response.on('data', function(data){console.warn("reponse is start");console.warn("reponse is start");console.log(data.toString());});}).end();
+        response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
 }, 100000);
 
 
 setTimeout(function() {
     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4'}, function(response)
-    {console.warn("reponse is start");console.log('Req Func2');response.on('data', function(data){console.warn("reponse is start");console.warn("reponse is start");console.log(data.toString());});}).end();
+    {console.warn("reponse is start");console.log('Req Func2');response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
 }, 200);
 
 
 
 
 setTimeout(function() {
-    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/'}, function(response) {console.warn("reponse is start");console.warn("reponse is start");console.log('Req Func3');
-    response.on('data', function(data){console.warn("reponse is start");console.warn("reponse is start");console.log(data.toString());});}).end();
+    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/'}, function(response) {console.warn("reponse is start");console.log('Req Func3');
+    response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
     }, 300);
 
 // Different methods we need to support GET/POST/PUT/DELETE/OPTIONS/TRACE
 setTimeout(function() {
-    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'GET'}, function(response) {console.warn("reponse is start");console.warn("reponse is start");console.log('Req Func4');response.on('data', function(data){console.warn("reponse is start");console.warn("reponse is start");console.log(data.toString());});}).end();
+    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'GET'}, function(response) {console.warn("reponse is start");console.log('Req Func4');response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
     }, 400);
 
 setTimeout(function() {
-    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'POST'}, function(response) {console.warn("reponse is start");console.warn("reponse is start");console.log('Req Func5');response.on('data', function(data){console.warn("reponse is start");console.warn("reponse is start");console.log(data.toString());});}).end();
-    }, 500);
+    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'POST'}, function(response) {console.warn("reponse is start");console.log('Req Func5');response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
+}, 500);
 
 setTimeout(function() {
-    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'PUT'}, function(response) {console.warn("reponse is start");console.warn("reponse is start");console.log('Req Func6');response.on('data', function(data){console.warn("reponse is start");console.warn("reponse is start");console.log(data.toString());});}).end();
+    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'PUT'}, function(response) {console.warn("reponse is start");console.log('Req Func6');response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
     }, 600);
 
 setTimeout(function() {
-    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'OPTIONS'}, function(response) {console.warn("reponse is start");console.warn("reponse is start");console.log('Req Func7');response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
+    http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'OPTIONS'}, function(response) {console.warn("reponse is start");console.log('Req Func7');response.on('data', function(data){console.warn("reponse is start");console.log(data.toString());});}).end();
     }, 700);
 
 setTimeout(function() {
