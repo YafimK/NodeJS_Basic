@@ -35,6 +35,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
             }
         }
         //TODO if we here we are in not found?
+        //TODO swith to httpStandart
         let response = (new httpResponse(socket, req.type));
         response.status(404).send(constants.StatusCodes[404]);
         return {done: true};
