@@ -19,6 +19,7 @@ function socketHandler(socket) {
 
     socket.on('error', function (err) {
         console.error("Caught error:" + err);
+        console.trace(err);
     });
 
     function treatRequest() {

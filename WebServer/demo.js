@@ -63,18 +63,19 @@ setTimeout(function() {
         console.log('Req Func2');
         response.on('data', function(data){
             console.warn("reponse is startdata2.1");
-            console.warn("reponse is startdata2.2");
-            console.log(data.toString());});}).end();
+            console.log(data.toString());
+        })
+		;}).end();
 }, 1001);
 
 //
-//
+
 //
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/'}, function(response) {console.log('Req Func3');
 //     response.on('data', function(data){console.log(data.toString());});}).end();
 //     }, 300);
-//
+// //
 // // Different methods we need to support GET/POST/PUT/DELETE/OPTIONS/TRACE
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'GET'}, function(response) {console.log('Req Func4');response.on('data', function(data){console.log(data.toString());});}).end();
@@ -87,7 +88,7 @@ setTimeout(function() {
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'PUT'}, function(response) {console.log('Req Func6');response.on('data', function(data){console.log(data.toString());});}).end();
 //     }, 600);
-
+//
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'OPTIONS'}, function(response) {console.log('Req Func7');response.on('data', function(data){console.log(data.toString());});}).end();
 //     }, 700);
@@ -95,8 +96,7 @@ setTimeout(function() {
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'TRACE'}, function(response) {console.log('Req Func8');response.on('data', function(data){console.log(data.toString());});}).end();
 //     }, 800);
-
-
+//
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'DELETE'}, function(response) {console.log('Req Func9');response.on('data', function(data){console.log(data.toString());});}).end();
 //     }, 900);
@@ -109,7 +109,7 @@ setTimeout(function() {
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/2/3/c/4/e.html', method: 'ERAN'}, function(response) {console.log('Req Func11');response.on('data', function(data){console.log(data.toString());});}).end();
 //     }, 1100);
-//
+
 // // Paths exists/don't
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/add/a'}, function(response) {console.log('Req Func12');response.on('data', function(data){console.log(data.toString());});}).end();

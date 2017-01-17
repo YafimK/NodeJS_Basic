@@ -30,7 +30,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
                     nextIndex += parseInt(idx) + 1;
                     let response = new httpResponse(socket, req.type);
                     currentArray[idx].middleWare(req, response, next);
-                    return {done: true}
+                        return {done: false}
                 }
             }
         }
