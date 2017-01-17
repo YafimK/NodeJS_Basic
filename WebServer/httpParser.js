@@ -10,7 +10,8 @@ function httpParser(data){
     let req = Object.create(httpRequest);
     req.method = data[0].trim().split(/\s+/g)[0];
     req.setRequestParams(data);
-    console.log("Request created: + " + req + " received.");
+    //TODO uncomment
+    //console.log("Request created: + " + req + " received.");
     return req;
 }
 

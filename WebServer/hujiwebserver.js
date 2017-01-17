@@ -2,6 +2,7 @@
  * Created by fimka on 06/01/2017.
  */
 let net = require("net");
+let constants = require('./httpConstants');
 let url = require("url");
 let parser = require("./httpParser");
 let router = require("./router").router;
@@ -32,7 +33,8 @@ function socketHandler(socket) {
     }
 
     socket.on('end', function () {
-        console.log('server disconnected');
+        //TODO uncomment
+        //console.log('server disconnected');
     });
 
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
@@ -40,7 +42,9 @@ function socketHandler(socket) {
     var requestData = "";
 
     socket.on('data', function (data, err) {
-        console.log('received DATA ' + socket.remoteAddress + ': ' + data);
+        //TODO uncomment
+        console.log("new socket")
+        //console.log('received DATA ' + socket.remoteAddress + ': ' + data);
         requestData += data;
         if(err)
         {
@@ -56,7 +60,8 @@ function socketHandler(socket) {
         if (had_error === true) {
             console.error("connection closed with error");
         }
-        console.log('CLOSED: ' + socket.remoteAddress + ' ' + socket.remotePort);
+        //TODO uncomment
+        //console.log('CLOSED: ' + socket.remoteAddress + ' ' + socket.remotePort);
     });
 
 }
@@ -66,7 +71,8 @@ function ServerObj(port) {
     let server = net.createServer(socketHandler);
 
     server.listen(this.port);//.setTimeout(25000);
-    console.log('Server starting on socket: ' + this.port);
+    //TODO uncomment
+    //console.log('Server starting on socket: ' + this.port);
     function stop() {
         server.stop();
     }
@@ -81,7 +87,8 @@ function start(port, callback) {
     this.callback = callback || defCallback;
     this.port = port;
     try {
-        console.log("starting server with port: " + this.port + " and callback " + this.callback);
+        //TODO uncomment
+        //console.log("starting server with port: " + this.port + " and callback " + this.callback);
         return new ServerObj(this.port);
     } catch (err) {
         this.callback(err);

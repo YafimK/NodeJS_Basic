@@ -3,7 +3,7 @@
  */
 
 "use strict";
-
+var constants = require('./httpConstants');
 let httpResponse = require('./httpResponse');
 
 let router = function() {
@@ -30,10 +30,14 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
                     nextIndex += parseInt(idx) + 1;
                     let response = new httpResponse(socket, req.type);
                     currentArray[idx].middleWare(req, response, next);
-                    return {done: false}
+                    return {done: true}
                 }
             }
         }
+        //TODO if we here we are in not found?
+        //TODO swith to httpStandart
+        let response = (new httpResponse(socket, req.type));
+        response.status(404).send(constants.StatusCodes[404]);
         return {done: true};
     };
     return next();
