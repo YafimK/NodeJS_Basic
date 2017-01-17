@@ -2,6 +2,7 @@
  * Created by fimka on 06/01/2017.
  */
 let net = require("net");
+let constants = require('./httpConstants');
 let url = require("url");
 let parser = require("./httpParser");
 let router = require("./router").router;
