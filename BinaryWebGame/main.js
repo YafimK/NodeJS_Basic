@@ -1,6 +1,8 @@
 /**
  * Created by fimka on 17/01/2017.
  */
+$ = require('jquery');
+var fileReader = require('./www/fileReader');
 var server = require('./../WebServer/hujiwebserver');
 server.start(8081);
 
@@ -17,9 +19,8 @@ var gambling = {
  * @param next
  */
 function serveMainPage(req, res, next){
- res.status(200).send(
-     "./www/binary.html"
- );
+    let htmlFile = fileReader.setDebugState(true).readFile('./www/binary.html');
+ res.status(200).send(htmlFile);
 }
 
 server.use(serveMainPage);

@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/yafimk/NodeJS_Basic/issues"
   },
-  "homepage": "https://github.com/yafimk/NodeJS_Basic#readme"
+  "homepage": "https://github.com/yafimk/NodeJS_Basic#readme",
+  "dependencies": {
+    "jquery": "^3.1.1"
+  }
 }
