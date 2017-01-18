@@ -47,12 +47,11 @@ function socketHandler(socket) {
         console.log("new socket")
         //console.log('received DATA ' + socket.remoteAddress + ': ' + data);
         requestData += data;
-        if(err)
-        {
+        if (err) {
             throw err;
         }
 
-        if(/(\r\n\r\n)/.test(requestData)){
+        if (/(\r\n\r\n)/.test(requestData)) {
             treatRequest();
         }
     });
@@ -98,7 +97,26 @@ function start(port, callback) {
 }
 
 function use(command, middleware) {
-    //TODO: default for middleware, command?
+    //Preatify!
+    function invalidUseOfUseFunc() {
+        throw "Incorrect arguments: use function must provide path and middle ware or just middle " +
+        "ware to be used with default path \"/\" "
+    }
+
+    if (arguments.length === 1) {
+        if (typeof (arguments[0]) === "function") {
+            this.middleware = arguments[0];
+            this.command = "/";
+        }
+        else {
+            invalidUseOfUseFunc();
+        }
+    } else if ((arguments.length === 0) || (typeof (arguments[1]) === "function" || arguments[0] != "string") ) {
+        invalidUseOfUseFunc();
+    }
+
+    //TODO: check if middleware is function with typeof
+
     router.addRoute(command, middleware);
 
     return this;
