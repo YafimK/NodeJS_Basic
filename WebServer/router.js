@@ -13,6 +13,7 @@ router.prototype.controllerSet =  [];
 
 router.prototype.addRoute = function(path, middleWare)
 {
+
     //TODO: check if middleware is function with typeof
     this.path = path || "/";
     this.controllerSet.push({path: path, middleWare: middleWare});
@@ -30,7 +31,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
                     nextIndex += parseInt(idx) + 1;
                     let response = new httpResponse(socket, req.type);
                     currentArray[idx].middleWare(req, response, next);
-                        return {done: false}
+                    return {done: false}
                 }
             }
         }

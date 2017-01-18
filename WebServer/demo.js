@@ -144,14 +144,14 @@ setTimeout(function() {
 //     }, 1800);
 //
 //
-// setTimeout(function() {
-//     http.request({host: 'localhost', port: 8080,  path: '/greg/a/greg.html'}, function(response) {console.log('Req Func19');response.on('data', function(data){console.log(data.toString());});}).end();
-//     }, 1900);
+setTimeout(function() {
+    http.request({host: 'localhost', port: 8080,  path: '/greg/a/greg.html'}, function(response) {console.log('Req Func19');response.on('data', function(data){console.log(data.toString());});}).end();
+    }, 1900);
 //
-// // file exists/don't
-// setTimeout(function() {
-//     http.request({host: 'localhost', port: 8080,  path: '/eran/simple.html'}, function(response) {console.log('Req Func20');response.on('data', function(data){console.log(data.toString());});}).end();
-//     }, 2000);
+// file exists/don't
+setTimeout(function() {
+    http.request({host: 'localhost', port: 8080,  path: '/eran/simple.html'}, function(response) {console.log('Req Func20');response.on('data', function(data){console.log(data.toString());});}).end();
+    }, 2000);
 //
 // setTimeout(function() {
 //     http.request({host: 'localhost', port: 8080,  path: '/eran/simple.htm'}, function(response) {console.log('Req Func21');response.on('data', function(data){console.log(data.toString());});}).end();

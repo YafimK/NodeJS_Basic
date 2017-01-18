@@ -1,6 +1,8 @@
 /**
  * Created by fimka on 17/01/2017.
  */
+$ = require('jquery');
+var fileReader = require('./www/fileReader');
 var server = require('./../WebServer/hujiwebserver');
 server.start(8081);
 
@@ -10,11 +12,20 @@ var gambling = {
     zeros: 0
 };
 
+/**
+ * Serves the main page with the game
+ * @param req
+ * @param res
+ * @param next
+ */
+function serveMainPage(req, res, next){
+    let fileHandler = Object.create(fileReader.fileReader);
+    fileHandler.setDebugState(true);
+    let htmlFile = fileHandler.readFile('./www/binary.html') || "";
+ res.status(200).send(htmlFile.toString());
+}
 
-
-
-
-
+server.use(serveMainPage);
 
 
 /**

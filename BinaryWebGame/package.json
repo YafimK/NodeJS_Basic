@@ -1,0 +1,22 @@
+{
+  "name": "binary_web_game",
+  "version": "1.0.0",
+  "description": "Cool binary web game that uses the homemade webserver",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yafimk/NodeJS_Basic.git"
+  },
+  "author": "YafimK, RefiP",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yafimk/NodeJS_Basic/issues"
+  },
+  "homepage": "https://github.com/yafimk/NodeJS_Basic#readme",
+  "dependencies": {
+    "jquery": "^3.1.1"
+  }
+}

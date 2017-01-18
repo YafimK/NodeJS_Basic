@@ -2,6 +2,8 @@
  * Created by fimka on 14/01/2017.
  */
 let STATUS_CODES = require('./httpStandard').STATUS_CODES;
+let parser = require("./httpParser");
+
 
 // set(), status(), get() , cookie(), send() and json() .
 var httpResponse = function (socket, httpType){
@@ -187,10 +189,15 @@ httpResponse.prototype.writeResponse = function(content){
         this.setContentType('text/html');
     }
     if(typeof content === 'string'){
-        this.setContentType('text/html');
+        let dataT = parser.parseDataSeqmant(chunk);
+        if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
+            this.setContentType('text/html');
+        } else{
+            this.setContentType('text/plain');
+        }
     }
 
-    else if(typeof content === 'Object'){
+    else if(typeof content === 'object'){
         return this.json(content)
     }
     else{
