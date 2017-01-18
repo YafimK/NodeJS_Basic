@@ -111,8 +111,12 @@ function use(command, middleware) {
         else {
             invalidUseOfUseFunc();
         }
-    } else if ((arguments.length === 0) || (typeof (arguments[1]) != "function" || arguments[0] != "string") ) {
+    } else if ((arguments.length === 0)) {
         invalidUseOfUseFunc();
+    } else {
+        if(typeof arguments[1] != "function" || typeof arguments[0] != "string"){
+            invalidUseOfUseFunc();
+        }
     }
 
     //TODO: check if middleware is function with typeof
