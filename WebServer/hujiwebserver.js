@@ -105,8 +105,8 @@ function use(command, middleware) {
 
     if (arguments.length === 1) {
         if (typeof (arguments[0]) === "function") {
-            this.middleware = arguments[0];
-            this.command = "/";
+            middleware = arguments[0];
+            command = "/";
         }
         else {
             invalidUseOfUseFunc();
