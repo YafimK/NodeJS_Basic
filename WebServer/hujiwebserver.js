@@ -11,11 +11,11 @@ let httpResponse = require("./httpResponse");
 
 function socketHandler(socket) {
     socket.setKeepAlive(false);
-    // socket.setTimeout(25000, function (timeoutAction)
-    // {
-    //     console.log("connection timed out!" + socket.host + ":" + socket.port);
-    //     socket.end();
-    // });
+    socket.setTimeout(25000, function ()
+    {
+        console.log("connection timed out!" + socket.host + ":" + socket.port);
+        socket.end();
+    });
 
     socket.on('error', function (err) {
         console.error("Caught error:" + err);
@@ -40,7 +40,7 @@ function socketHandler(socket) {
 
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
-    var requestData = "";
+    let requestData = "";
 
     socket.on('data', function (data, err) {
         //TODO uncomment

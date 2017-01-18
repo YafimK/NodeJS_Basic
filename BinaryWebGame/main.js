@@ -22,7 +22,7 @@ function serveMainPage(req, res, next){
     let fileHandler = Object.create(fileReader.fileReader);
     fileHandler.setDebugState(true);
     let htmlFile = fileHandler.readFile('./www/binary.html') || "";
- res.status(200).send(htmlFile);
+ res.status(200).send(htmlFile.toString());
 }
 
 server.use(serveMainPage);

@@ -12,13 +12,15 @@ var fileReader =
         return this;
     },
     readFile(filePath){
-        fs.readFile(filePath, function (err, fileContent) {
-            if (err) {
-                return console.error(err);
-            }
+        //TODO: make it ASync
+        let fileContent;
+        try {
+            fileContent = fs.readFileSync(filePath);
             console.log("file contents: " + fileContent.toString());
             return fileContent;
-        });
+        } catch (err) {
+            console.error(err);
+        }
     }
 };
 
