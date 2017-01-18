@@ -19,7 +19,9 @@ var gambling = {
  * @param next
  */
 function serveMainPage(req, res, next){
-    let htmlFile = fileReader.setDebugState(true).readFile('./www/binary.html');
+    let fileHandler = Object.create(fileReader.fileReader);
+    fileHandler.setDebugState(true);
+    let htmlFile = fileHandler.readFile('./www/binary.html') || "";
  res.status(200).send(htmlFile);
 }
 

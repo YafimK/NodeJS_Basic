@@ -4,20 +4,20 @@
 var fs = require("fs");
 
 
-var fileReader = function()
+var fileReader =
 {
-    this.debugState = false;
-    fileReader.setDebugState= function(state){
+    debugState: false,
+    setDebugState(state){
         this.debugState = true;
         return this;
-    };
-    fileReader.readFile = function(filePath){
-        fs.readFile(filePath, function (err, data) {
+    },
+    readFile(filePath){
+        fs.readFile(filePath, function (err, fileContent) {
             if (err) {
                 return console.error(err);
             }
-            console.log("file contents: " + data.toString());
-            return data;
+            console.log("file contents: " + fileContent.toString());
+            return fileContent;
         });
     }
 };
