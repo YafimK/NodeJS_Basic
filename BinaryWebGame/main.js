@@ -10,11 +10,19 @@ var gambling = {
     zeros: 0
 };
 
+/**
+ * Serves the main page with the game
+ * @param req
+ * @param res
+ * @param next
+ */
+function serveMainPage(req, res, next){
+ res.status(200).send(
+     "./www/binary.html"
+ );
+}
 
-
-
-
-
+server.use(serveMainPage);
 
 
 /**
