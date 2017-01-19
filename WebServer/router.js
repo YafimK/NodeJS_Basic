@@ -28,6 +28,19 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
             for(let idx in currentArray){
                 let entry = currentArray[idx];
                 if(checkMatch(currentArray[idx].path, path)){
+                    var command = currentArray[idx].path
+                    var commandParams = {}
+                    command.split('/').forEach(function (elem, i) {
+
+                            if (elem.startsWith(':')) {
+                                commandParams[elem.substr(1)] = i;
+                            }
+                        })
+                    for (var param in commandParams) {
+                        if (commandParams.hasOwnProperty(param)) {
+                            req.params[param] = commandParams[param];
+                        }
+                    }
                     nextIndex += parseInt(idx) + 1;
                     let response = new httpResponse(socket, req.type);
                     currentArray[idx].middleWare(req, response, next);
