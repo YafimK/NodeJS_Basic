@@ -7,7 +7,7 @@ var server = require('./../WebServer/hujiwebserver');
 server.start(8081);
 
 //Store the last score
-var gambling = {
+let gambling = {
   ones: 0,
     zeros: 0
 };
@@ -25,10 +25,27 @@ var gambling = {
  */
 function buttonClickResult(req, res, next){
     let currentChoice = req.params.chosenNumber;
-    if(currentChoice)
+    if(currentChoice && gambling.has(currentChoice))
     {
+        if((currentChoice === 1) && (gambling.ones > gambling.zeros)){
+            //user won
+            console.warn("user won");
+        } else if((currentChoice === 0) && (gambling.ones < gambling.zeros)){
+            //user won
+            console.warn("user won");
+        } else if(gambling.ones == gambling.zeros){
+            //tie
+            console.warn("user tie");
 
+        } else {
+            //user lose!
+            console.warn("user lose");
+
+        }
+
+        gambling[currentChoice] += 1;
     }
+    res.statusCode(200).json(gambling)
 }
 
 server.use('/gamble/:chosenNumber', buttonClickResult);
@@ -42,7 +59,8 @@ server.use('/gamble/:chosenNumber', buttonClickResult);
  * @param next
  */
 function resetGame(req, res, next){
-
+    gambling.ones = 0;
+    gambling.zeros = 0;
 }
 
 server.use('/gamble/reset', resetGame);

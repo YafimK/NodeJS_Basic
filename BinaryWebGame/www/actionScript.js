@@ -16,6 +16,16 @@ function userChoice(event) {
 }
 
 function resetGame(){
+    $.ajax("/gamble/reset")
+        .done(function() {
+            console.log( "success in resetting the game" );
+    })
+    .fail(function() {
+        console.warn( "error in resting the game" );
+    })
+    .always(function() {
+        console.warn( "completed reset request" );
+    });
 }
 
 $("#user1choice").click({userNum: 1}, userChoice);
