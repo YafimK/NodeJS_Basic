@@ -44,6 +44,8 @@ function buttonClickResult(req, res, next){
         //
         // }
 
+        }
+
         gambling[currentChoice] += 1;
     }
     res.status(200).json(gambling)
