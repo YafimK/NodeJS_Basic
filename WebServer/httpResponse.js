@@ -175,7 +175,31 @@ httpResponse.prototype.getStatusLine = function () {
   return statusLine;
 };
 
-
+/**
+ * Check content type
+ */
+httpResponse.prototype.checkContentType = function (content) {
+   if(this.get('Content-Type')){
+       return;
+   }
+    if(!content || content === null){
+        content = '';
+        this.setContentType('text/html');
+    } else if(typeof content === 'string'){
+        let dataT = parser.parseDataSeqmant(chunk);
+        if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
+            this.setContentType('text/html');
+        } else{
+            this.setContentType('text/plain');
+        }
+    }
+    else if(typeof content === 'object'){
+        return this.json(content)
+    }
+    else{
+        throw TypeError("Doesn't recognize type")
+    }
+};
 
 /**
  * utility that does the actual write to the socket.
@@ -184,25 +208,7 @@ httpResponse.prototype.getStatusLine = function () {
  */
 httpResponse.prototype.writeResponse = function(content){
     let chunk = content;
-    if(!content || content === null){
-        content = '';
-        this.setContentType('text/html');
-    }
-    if(typeof content === 'string'){
-        let dataT = parser.parseDataSeqmant(chunk);
-        if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
-            this.setContentType('text/html');
-        } else{
-            this.setContentType('text/plain');
-        }
-    }
-
-    else if(typeof content === 'object'){
-        return this.json(content)
-    }
-    else{
-        throw TypeError("Doesn't recognize type")
-    }
+    this.checkContentType(content);
 
     if (204 === this.statusCode || 304 === this.statusCode) {
         this.removeHeader('Content-Type');
@@ -212,7 +218,6 @@ httpResponse.prototype.writeResponse = function(content){
     }
 
     this.setContentLength(content);
-    this.setContentType();
 
     let test = this.getStatusLine() + this.getHeadersBody() + this.getCookieHeader() + '\r\n' + chunk;
 
