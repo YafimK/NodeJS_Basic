@@ -1,10 +1,8 @@
 /**
  * Created by fimka on 18/01/2017.
  */
-$ = require('https://code.jquery.com/jquery-3.1.1.js');
-
-function userChoice(num) {
-    let url = "/gamble/" + num;
+function userChoice(event) {
+    let url = "/gamble/" + event.userNum;
     $.ajax({url: url})  .done(function() {
         alert( "success" );
     })
@@ -17,12 +15,11 @@ function userChoice(num) {
 }
 
 function resetGame(){
-    $.send()
 }
 
-$("#user1choice").click(userChoice(1));
+$("#user1choice").click({userNum: 1}, userChoice);
 
-$("#user0choice").click(userChoice(0));
+$("#user0choice").click({userNum: 0}, userChoice);
 
-$("#newGame").click(resetGame());
+$("#newGame").click(resetGame);
 

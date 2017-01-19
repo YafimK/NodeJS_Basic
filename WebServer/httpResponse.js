@@ -186,12 +186,7 @@ httpResponse.prototype.checkContentType = function (content) {
         content = '';
         this.setContentType('text/html');
     } else if(typeof content === 'string'){
-        let dataT = parser.parseDataSeqmant(chunk);
-        if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
             this.setContentType('text/html');
-        } else{
-            this.setContentType('text/plain');
-        }
     }
     else if(typeof content === 'object'){
         return this.json(content)
