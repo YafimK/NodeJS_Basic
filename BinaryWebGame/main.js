@@ -12,21 +12,6 @@ var gambling = {
     zeros: 0
 };
 
-/**
- * Serves the main page with the game
- * @param req
- * @param res
- * @param next
- */
-function serveMainPage(req, res, next){
-    let fileHandler = Object.create(fileReader.fileReader);
-    fileHandler.setDebugState(true);
-    let htmlFile = fileHandler.readFile('./www/binary.html') || "";
- res.status(200).send(htmlFile.toString());
-}
-
-server.use(serveMainPage);
-
 
 /**
  * Button “0” means that the user choose “0”
@@ -39,10 +24,14 @@ server.use(serveMainPage);
  * @param next
  */
 function buttonClickResult(req, res, next){
+    let currentChoice = req.params.chosenNumber;
+    if(currentChoice)
+    {
 
+    }
 }
 
-server.use('/gamble/:a', buttonClickResult);
+server.use('/gamble/:chosenNumber', buttonClickResult);
 
 /**
  * Button “new game” that resets the game
@@ -57,3 +46,20 @@ function resetGame(req, res, next){
 }
 
 server.use('/gamble/reset', resetGame);
+
+
+/**
+ * Serves the main page with the game
+ * @param req
+ * @param res
+ * @param next
+ */
+function serveMainPage(req, res, next){
+    let fileHandler = Object.create(fileReader.fileReader);
+    fileHandler.setDebugState(true);
+    let htmlFile = fileHandler.readFile('./www/binary.html') || "";
+    let buffer = htmlFile.toString();
+    res.status(200).send(buffer);
+}
+
+server.use(serveMainPage);
