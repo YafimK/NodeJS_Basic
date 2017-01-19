@@ -3,6 +3,7 @@
  */
 
 let url = require("url");
+let MIME_TYPES = require('./httpStandard').MIME_TYPES;
 
 var httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE'];
 var httpRequest = {
@@ -70,11 +71,58 @@ var httpRequest = {
         //TODO not sure its work need to check
         return this.reqHeaders[contentType]
 
+    },
+
+    checkMatch(curPath, reqCheckPath) {
+    var regexOfHandler = "^";
+    var regexOfHandlerObj;
+
+    var listOfResource = curPath.split('\/');
+    for (var i = 0; i < listOfResource.length; ++i) {
+        if (listOfResource[i] !== "") {
+            regexOfHandler += "\/";
+            if (!(listOfResource[i].match(/:/g))) {
+                regexOfHandler += listOfResource[i];
+            }
+            else {
+                regexOfHandler += "(?:([^\/]+?))";
+            }
+        }
+    }
+    regexOfHandler += '($|\/)';
+    regexOfHandlerObj = new RegExp(regexOfHandler, "i");
+    return reqCheckPath.match(regexOfHandlerObj)
+    },
+
+    is(types){
+        "use strict";
+        var arr = types;
+
+        arr = new Array(arguments.length);
+        for (var i = 0; i < arr.length; i++) {
+
+            if (MIME_TYPES.hasOwnProperty(arguments[i])) {
+                return this.get('content-type') === arguments[i];
+            }
+
+            for (var mimetype in constants.MimeTypes) {
+                if (constants.MimeTypes.hasOwnProperty(mimetype)
+                    && MIME_TYPES[mimetype].hasOwnProperty('extensions')
+                    && MIME_TYPES[mimetype].extensions.indexOf(arguments[i]) >= 0) {
+
+                    return this.get('content-type') === mimetype;
+
+
+                }
+            }
+        }
     }
 
     //TODO need to add is() function
     //TODO add param()
 };
+
+
 
 
 module.exports = httpRequest;

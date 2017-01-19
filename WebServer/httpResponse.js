@@ -23,7 +23,7 @@ httpResponse.prototype.statusMsg = 'OK';
  * @returns value or undefined if not found.
  */
 httpResponse.prototype.get = function (headerName) {
-    return this.headers.get(headerName);
+    return this.headers.get(headerName.toLowerCase());
 };
 
 /**
@@ -48,7 +48,7 @@ httpResponse.prototype.set = function (field, value) {
     //TODO: add some sanity checks
     if(value)
     {
-        this.headers.set(field, value);
+        this.headers.set(field.toLowerCase(), value);
 
     } else if(field) {
         for(let headerName in field)
@@ -115,7 +115,7 @@ httpResponse.prototype.setContentLength = function(content) {
  * @return {httpResponse}
  */
 httpResponse.prototype.setContentType = function(contentType) {
-    if (!this.headers.has('content-type')) {
+    if (!this.headers.has('Content-Type')) {
         if (contentType) {
             this.set('content-type', contentType);
         }
@@ -179,14 +179,19 @@ httpResponse.prototype.getStatusLine = function () {
  * Check content type
  */
 httpResponse.prototype.checkContentType = function (content) {
-   if(this.get('content-type')){
+   if(this.get('Content-Type')){
        return;
    }
     if(!content || content === null){
         content = '';
         this.setContentType('text/html');
     } else if(typeof content === 'string'){
+        let dataT = parser.parseDataSeqmant(content);
+        if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
             this.setContentType('text/html');
+        } else{
+            this.setContentType('text/plain');
+        }
     }
     else if(typeof content === 'object'){
         return this.json(content)
