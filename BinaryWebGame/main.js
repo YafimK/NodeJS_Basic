@@ -54,12 +54,24 @@ server.use('/gamble/reset', resetGame);
  * @param res
  * @param next
  */
-function serveMainPage(req, res, next){
+function serveHttpFiles(req, res, next){
     let fileHandler = Object.create(fileReader.fileReader);
     fileHandler.setDebugState(true);
-    let htmlFile = fileHandler.readFile('./www/binary.html') || "";
+    if(req.path === "/"){
+        req.path = "/binary.html";
+    }
+    let ext = req.path.slice(req.path.indexOf('.') + 1);
+    if(ext === 'css'){
+        res.setContentType('text/css');
+    } else if(ext === 'js') {
+        res.setContentType("text/javascript");
+
+    } else if (ext === "html") {
+        res.setContentType("text/html");
+    }
+    let htmlFile = fileHandler.readFile('./www' + req.path) || "";
     let buffer = htmlFile.toString();
     res.status(200).send(buffer);
 }
 
-server.use(serveMainPage);
+server.use(serveHttpFiles);
