@@ -3,6 +3,7 @@
  */
 function userChoice(event) {
     let url = "/gamble/" + event.userNum;
+
     $.ajax({url: url})  .done(function() {
         alert( "success" );
     })
