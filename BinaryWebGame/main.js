@@ -24,31 +24,30 @@ let gambling = {
  * @param next
  */
 function buttonClickResult(req, res, next){
-
     let currentChoice = req.params.chosenNumber;
-    if(currentChoice && gambelingDict.hasOwnProperty(currentChoice))
+    if(currentChoice && gambling.has(currentChoice))
     {
-        // if((currentChoice === 1) && (gambling.ones > gambling.zeros)){
-        //     //user won
-        //     console.warn("user won");
-        // } else if((currentChoice === 0) && (gambling.ones < gambling.zeros)){
-        //     //user won
-        //     console.warn("user won");
-        // } else if(gambling.ones == gambling.zeros){
-        //     //tie
-        //     console.warn("user tie");
-        //
-        // } else {
-        //     //user lose!
-        //     console.warn("user lose");
-        //
-        // }
+        if((currentChoice === 1) && (gambling.ones > gambling.zeros)){
+            //user won
+            console.warn("user won");
+        } else if((currentChoice === 0) && (gambling.ones < gambling.zeros)){
+            //user won
+            console.warn("user won");
+        } else if(gambling.ones == gambling.zeros){
+            //tie
+            console.warn("user tie");
+
+        } else {
+            //user lose!
+            console.warn("user lose");
+
+        }
 
         }
 
         gambling[currentChoice] += 1;
     }
-    res.status(200).json(gambling)
+    res.statusCode(200).json(gambling)
 }
 
 server.use('/gamble/:chosenNumber', buttonClickResult);
