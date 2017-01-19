@@ -101,10 +101,10 @@ httpResponse.prototype.cookie = function (name, value, options) {
 httpResponse.prototype.setContentLength = function(content) {
         if (content) {
             // this.set("Content-Length", content.length);
-            this.set("Content-Length", Buffer.byteLength(content));
+            this.set("content-length", Buffer.byteLength(content));
         }
         else {
-            this.set("Content-Length", "0")
+            this.set("content-length", "0")
         }
     return this;
 };
@@ -115,12 +115,12 @@ httpResponse.prototype.setContentLength = function(content) {
  * @return {httpResponse}
  */
 httpResponse.prototype.setContentType = function(contentType) {
-    if (!this.headers.has('Content-Type')) {
+    if (!this.headers.has('content-type')) {
         if (contentType) {
-            this.set('Content-Type', contentType);
+            this.set('content-type', contentType);
         }
         else {
-            this.set('Content-Type', 'text/plain');
+            this.set('content-type', 'text/plain');
         }
     }
     return this;
@@ -134,7 +134,7 @@ httpResponse.prototype.getCookieHeader = function () {
     let cookieHeader = '';
     if(this.cookies.size != 0)
     {
-        cookieHeader = 'Set-Cookie: '
+        cookieHeader = 'set-cookie: '
     }
     this.cookies.forEach(function (value, key) {
         cookieHeader += key + '=' + value.value;
@@ -179,7 +179,7 @@ httpResponse.prototype.getStatusLine = function () {
  * Check content type
  */
 httpResponse.prototype.checkContentType = function (content) {
-   if(this.get('Content-Type')){
+   if(this.get('content-type')){
        return;
    }
     if(!content || content === null){
@@ -206,9 +206,9 @@ httpResponse.prototype.writeResponse = function(content){
     this.checkContentType(content);
 
     if (204 === this.statusCode || 304 === this.statusCode) {
-        this.removeHeader('Content-Type');
-        this.removeHeader("Content-Length");
-        this.removeHeader('Transfer-Encoding');
+        this.removeHeader('content-type');
+        this.removeHeader("content-length");
+        this.removeHeader('transfer-encoding');
         chunk = '';
     }
 

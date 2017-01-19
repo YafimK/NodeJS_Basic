@@ -11,7 +11,8 @@ let httpResponse = require("./httpResponse");
 
 function socketHandler(socket) {
     socket.setKeepAlive(false);
-    socket.setTimeout(25000, function ()
+    //TODO change timeout to 25000
+    socket.setTimeout(250000000, function ()
     {
         console.log("connection timed out!" + socket.host + ":" + socket.port);
         socket.end();

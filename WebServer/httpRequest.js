@@ -36,8 +36,8 @@ var httpRequest = {
         //TODO if we got this far its http?
         this.protocol = "http"
         this.query = this.reqUrl.query
-        this.host = this.reqHeaders["Host"]
-        this.cookies = this.reqHeaders["Cookie"]
+        this.host = this.reqHeaders["host"]
+        this.cookies = this.reqHeaders["cookie"]
     },
     setBaseParams(request){
         let requestType = request.trim().split(/\s+/g);
