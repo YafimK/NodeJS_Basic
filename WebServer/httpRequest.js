@@ -79,6 +79,7 @@ var httpRequest = {
         //TODO path or pathname? path includes query for instance
         this.path = this.reqUrl.pathname
         //TODO if we got this far its http?
+        //TODO maybe should be HTTP 1.1
         this.protocol = "http";
         this.query = this.parseQuery(this.reqUrl.query);
         this.host = this.reqHeaders["host"];
@@ -180,6 +181,9 @@ var httpRequest = {
     param(param){
         //TODO do we need a callback function?
         //TODO sanity checks
+        if (null != this.body[param]){
+            return this.body[param];
+        }
 
         if (null != this.params[param] && this.params.hasOwnProperty(param)){
             return this.params[param];
@@ -187,6 +191,7 @@ var httpRequest = {
         if (null != this.query[param]){
 
         } return this.query[param];
+
 
         return {};
     }
