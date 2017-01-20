@@ -15,7 +15,7 @@ var httpRequest = {
     path: '',
     protocol: '',
     host: '',
-    query: '',
+    query: {},
     cookies:{},
 
 
@@ -38,17 +38,40 @@ var httpRequest = {
                         });});
                     value = _this.cookies;
                  }
+                 else if(param === "query"){
+                    let queryStore = value.split(';');
+                    queryStore.forEach(function(query){
+                        query.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, queryHeader, queryField) {
+                            _this.query[queryHeader] = queryField;
+                        });});
+                    value = _this.query;
+
+                }
             headerList[param] = value;
             });
         });
         this.reqHeaders = headerList;
         //TODO path or pathname? path includes query for instance
-        this.path = this.reqUrl.path
+        this.path = this.reqUrl.pathname
         //TODO if we got this far its http?
         this.protocol = "http";
-        this.query = this.reqUrl.query;
+        this.query = this.parseQuery(this.reqUrl.query);
         this.host = this.reqHeaders["host"];
-        this.cookies = this.reqHeaders["cookie"]
+        //this.cookies = this.reqHeaders["cookie"]
+    },
+    parseQuery(queryString){
+        let returnQuery = {}
+        if(!queryString){
+            return returnQuery
+        }
+
+        let queryStore = queryString.split(';');
+        queryStore.forEach(function(query){
+            query.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, queryHeader, queryField) {
+                returnQuery[queryHeader] = queryField;
+            });});
+        return returnQuery;
+
     },
     setBaseParams(request){
         let requestType = request.trim().split(/\s+/g);
