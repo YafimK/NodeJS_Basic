@@ -12,11 +12,11 @@ let httpResponse = require("./httpResponse");
 function socketHandler(socket) {
     socket.setKeepAlive(false);
     //TODO change timeout to 25000
-    socket.setTimeout(250000000, function ()
-    {
-        console.log("connection timed out!" + socket.host + ":" + socket.port);
-        socket.end();
-    });
+    // socket.setTimeout(250000000, function ()
+    // {
+    //     console.log("connection timed out!" + socket.host + ":" + socket.port);
+    //     socket.end();
+    // });
 
     socket.on('error', function (err) {
         console.error("Caught error:" + err);
@@ -74,8 +74,8 @@ function ServerObj(port) {
     server.listen(this.port);//.setTimeout(25000);
     //TODO uncomment
     //console.log('Server starting on socket: ' + this.port);
-    function stop() {
-        server.stop();
+     ServerObj.prototype.stop = function() {
+        server.close();
     }
 }
 
@@ -90,7 +90,9 @@ function start(port, callback) {
     try {
         //TODO uncomment
         //console.log("starting server with port: " + this.port + " and callback " + this.callback);
-        return new ServerObj(this.port);
+        let server = new ServerObj(this.port)
+        callback();
+        return server
     } catch (err) {
         this.callback(err);
     }

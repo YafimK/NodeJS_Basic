@@ -16,7 +16,18 @@ router.prototype.addRoute = function(path, middleWare)
 
     //TODO: check if middleware is function with typeof
     this.path = path || "/";
-    this.controllerSet.push({path: path, middleWare: middleWare});
+    var commandParams = {}
+    path.split('/').forEach(function (elem, i) {
+
+        if (elem.startsWith(':')) {
+            commandParams[elem.substr(1)] = i;
+        }
+    })
+    var command_input ={
+        path: this.path,
+        command_params: commandParams
+    }
+    this.controllerSet.push({commandObj: command_input, middleWare: middleWare});
 };
 
 router.prototype.makeRouteHandleIterator = function(originalArr, path, req, socket) {
@@ -27,21 +38,15 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
         if(nextIndex < originalArr.length){
             for(let idx in currentArray){
                 let entry = currentArray[idx];
-                if(checkMatch(currentArray[idx].path, path)){
-                    var command = currentArray[idx].path
-                    var commandParams = {}
-                    command.split('/').forEach(function (elem, i) {
-
-                            if (elem.startsWith(':')) {
-                                commandParams[elem.substr(1)] = i;
-                            }
-                        })
-                    for (var param in commandParams) {
-                        if (commandParams.hasOwnProperty(param)) {
-                            req.params[param] = commandParams[param];
+                if(checkMatch(currentArray[idx].commandObj.path, path)){
+                    nextIndex += parseInt(idx) + 1;
+                    req.params = currentArray[idx].commandObj.command_params
+                    let urlParams = req.path.split('/');
+                    for (var param in currentArray[idx].commandObj.command_params) {
+                        if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
+                          req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
                         }
                     }
-                    nextIndex += parseInt(idx) + 1;
                     let response = new httpResponse(socket, req.type);
                     currentArray[idx].middleWare(req, response, next);
                     return {done: false}

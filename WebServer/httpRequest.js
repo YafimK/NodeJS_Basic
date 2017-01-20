@@ -16,7 +16,7 @@ var httpRequest = {
     protocol: '',
     host: '',
     query: '',
-    cookies:'',
+    cookies:{},
 
 
     setRequestParams(params) {
@@ -25,19 +25,29 @@ var httpRequest = {
         let headers = params.slice(0);
         let headerRegEx = /(\b[^:]+):\s+([^']+)/g;
         let headerList = {};
+        let _this = this;
         headers.forEach(function(row)
         {
             row.trim().replace(headerRegEx, function ($0, param, value) {
-                headerList[param] = value;
+                param = param.toString().toLowerCase();
+                if(param === "cookie"){
+                    let cookieStore = value.split(';');
+                    cookieStore.forEach(function(cookie){
+                        cookie.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, cookieHeader, cookieField) {
+                            _this.cookies[cookieHeader] = cookieField;
+                        });});
+                    value = _this.cookies;
+                 }
+            headerList[param] = value;
             });
         });
         this.reqHeaders = headerList;
         //TODO path or pathname? path includes query for instance
         this.path = this.reqUrl.path
         //TODO if we got this far its http?
-        this.protocol = "http"
-        this.query = this.reqUrl.query
-        this.host = this.reqHeaders["host"]
+        this.protocol = "http";
+        this.query = this.reqUrl.query;
+        this.host = this.reqHeaders["host"];
         this.cookies = this.reqHeaders["cookie"]
     },
     setBaseParams(request){
@@ -58,18 +68,20 @@ var httpRequest = {
     getPath(){
         return this.reqUrl.path;
     },
+    param(){
 
-    get(contentType){
+    },
+    get(headerName){
 
-        if (!contentType) {
+        if (!headerName) {
             throw new TypeError('There is no content type');
         }
 
-        if (typeof contentType !== 'string') {
+        if (typeof headerName !== 'string') {
             throw new TypeError('Handle only strings');
         }
         //TODO not sure its work need to check
-        return this.reqHeaders[contentType]
+        return this.reqHeaders[headerName]
 
     },
 
@@ -95,7 +107,6 @@ var httpRequest = {
     },
 
     is(types){
-        "use strict";
         var arr = types;
 
         arr = new Array(arguments.length);
