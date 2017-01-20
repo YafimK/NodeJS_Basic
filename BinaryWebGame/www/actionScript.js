@@ -28,9 +28,19 @@ function resetGame(){
     });
 }
 
-$("#user1choice").click({userNum: 1}, userChoice);
 
-$("#user0choice").click({userNum: 0}, userChoice);
 
-$("#newGame").click(resetGame);
+(function( $ ){
+    $.fn.showProfilePage = function() {
+        $("<div class='votingButtons'></div>").appendTo("#gameView");
+        $("<input id=\"user1choice\" type=\"button\" value=\"1\">").appendTo(".votingButtons");
+        $("<input id=\"user1choice\" type=\"button\" value=\"0\">").appendTo(".votingButtons");
+        $("<input id=\"newGame\" type=\"button\" value=\"New game\">").appendTo(".votingButtons");
+        $("#user1choice").click({userNum: 1}, userChoice);
 
+        $("#user0choice").click({userNum: 0}, userChoice);
+
+        $("#newGame").click(resetGame);
+        return this;
+    };
+})( jQuery );
