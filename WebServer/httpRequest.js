@@ -150,10 +150,22 @@ var httpRequest = {
                 }
             }
         }
-    }
+    },
 
-    //TODO need to add is() function
     //TODO add param()
+    param(param){
+        //TODO do we need a callback function?
+        //TODO sanity checks
+
+        if (null != this.params[param] && this.params.hasOwnProperty(param)){
+            return params[param];
+        }
+        if (null != this.query[param]){
+
+        } return this.query[param];
+
+        return {};
+    }
 };
 
 
