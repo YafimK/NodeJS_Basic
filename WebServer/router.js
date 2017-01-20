@@ -40,7 +40,6 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
                 let entry = currentArray[idx];
                 if(checkMatch(currentArray[idx].commandObj.path, path)){
                     nextIndex += parseInt(idx) + 1;
-                    req.params = currentArray[idx].commandObj.command_params
                     let urlParams = req.path.split('/');
                     for (var param in currentArray[idx].commandObj.command_params) {
                         if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
