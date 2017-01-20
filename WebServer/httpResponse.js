@@ -46,18 +46,21 @@ httpResponse.prototype.json = function(body)
  */
 httpResponse.prototype.set = function (field, value) {
     //TODO: add some sanity checks
+
     if(value)
     {
         this.headers.set(field.toLowerCase(), value);
 
-    } else if(field) {
+    }
+    else if(field) {
         for(let headerName in field)
         {
-            this.headers.set(headerName, field[prop].toString());
+            this.set(headerName, field[headerName].toString());
         }
     }
     else{
         console.error("you can't set headers without setting proper values.");
+        throw Error("Bad value or field.")
     }
 
 

@@ -158,7 +158,7 @@ var httpRequest = {
         //TODO sanity checks
 
         if (null != this.params[param] && this.params.hasOwnProperty(param)){
-            return params[param];
+            return this.params[param];
         }
         if (null != this.query[param]){
 
