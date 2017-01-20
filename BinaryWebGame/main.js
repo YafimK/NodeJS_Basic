@@ -24,8 +24,9 @@ let gambling = {
  * @param next
  */
 function buttonClickResult(req, res, next){
+    let gambelingDict = {1: 'ones', 0: 'zeros'};
     let currentChoice = req.params.chosenNumber;
-    if(currentChoice && gambling.has(currentChoice))
+    if(currentChoice && gambelingDict.hasOwnProperty(currentChoice))
     {
         if((currentChoice === 1) && (gambling.ones > gambling.zeros)){
             //user won
@@ -45,7 +46,7 @@ function buttonClickResult(req, res, next){
 
         gambling[currentChoice] += 1;
     }
-    res.statusCode(200).json(gambling)
+    res.status(200).json(gambling)
 }
 
 server.use('/gamble/:chosenNumber', buttonClickResult);
