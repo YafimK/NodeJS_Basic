@@ -24,25 +24,25 @@ let gambling = {
  * @param next
  */
 function buttonClickResult(req, res, next){
-    let gambelingDict = {1: 'ones', 0: 'zeros'};
+
     let currentChoice = req.params.chosenNumber;
     if(currentChoice && gambelingDict.hasOwnProperty(currentChoice))
     {
-        if((currentChoice === 1) && (gambling.ones > gambling.zeros)){
-            //user won
-            console.warn("user won");
-        } else if((currentChoice === 0) && (gambling.ones < gambling.zeros)){
-            //user won
-            console.warn("user won");
-        } else if(gambling.ones == gambling.zeros){
-            //tie
-            console.warn("user tie");
-
-        } else {
-            //user lose!
-            console.warn("user lose");
-
-        }
+        // if((currentChoice === 1) && (gambling.ones > gambling.zeros)){
+        //     //user won
+        //     console.warn("user won");
+        // } else if((currentChoice === 0) && (gambling.ones < gambling.zeros)){
+        //     //user won
+        //     console.warn("user won");
+        // } else if(gambling.ones == gambling.zeros){
+        //     //tie
+        //     console.warn("user tie");
+        //
+        // } else {
+        //     //user lose!
+        //     console.warn("user lose");
+        //
+        // }
 
         gambling[currentChoice] += 1;
     }
