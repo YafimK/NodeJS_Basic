@@ -65,6 +65,16 @@ var httpRequest = {
                         _this.body = JSON.parse(row.trim());
 
                     }
+                    else if(!headerList['content-type'] === false && headerList['content-type'] === 'application/x-www-form-urlencoded'){
+                        var bodyObj = {};
+
+                        row.trim().split('&').forEach(function (elem) {
+                                var matches = elem.trim().split('=');
+                                bodyObj[matches[0]] = matches[1];
+                            });
+
+                        _this.body = bodyObj;
+                     }
                     else{
                         _this.body = row.trim().toString()
                     }
@@ -126,7 +136,7 @@ var httpRequest = {
             throw new TypeError('Handle only strings');
         }
         //TODO not sure its work need to check
-        return this.reqHeaders[headerName]
+        return this.reqHeaders[headerName.toLowerCase()]
 
     },
 
