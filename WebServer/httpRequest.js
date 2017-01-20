@@ -4,6 +4,9 @@
 
 let url = require("url");
 let MIME_TYPES = require('./httpStandard').MIME_TYPES;
+let CR = '\r';
+let LF = '\n';
+let CRLF = '\r\n';
 
 var httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE'];
 var httpRequest = {
@@ -22,10 +25,11 @@ var httpRequest = {
     setRequestParams(params) {
         let reqLine = params[0];
         this.setBaseParams(reqLine);
-        let headers = params.slice(0);
+        let headers = params.slice(1);
         let headerRegEx = /(\b[^:]+):\s+([^']+)/g;
         let headerList = {};
         let _this = this;
+        var matchPram = false
         headers.forEach(function(row)
         {
             row.trim().replace(headerRegEx, function ($0, param, value) {
@@ -39,6 +43,7 @@ var httpRequest = {
                     value = _this.cookies;
                  }
                  else if(param === "query"){
+                    //TODO check if we can delete elseif
                     let queryStore = value.split(';');
                     queryStore.forEach(function(query){
                         query.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, queryHeader, queryField) {
@@ -47,8 +52,25 @@ var httpRequest = {
                     value = _this.query;
 
                 }
-            headerList[param] = value;
+                matchPram = true
+                headerList[param] = value;
             });
+            if(!matchPram){
+                if(row === CRLF || row === LF || row === CR ){
+                    matchPram = false
+                }
+                else{
+                    //TODO we need anything else to check?
+                    if(!headerList['content-type'] === false && headerList['content-type'] === 'application/json'){
+                        _this.body = JSON.parse(row.trim());
+
+                    }
+                    else{
+                        _this.body = row.trim().toString()
+                    }
+                }
+            }
+            matchPram = false
         });
         this.reqHeaders = headerList;
         //TODO path or pathname? path includes query for instance
@@ -152,7 +174,6 @@ var httpRequest = {
         }
     },
 
-    //TODO add param()
     param(param){
         //TODO do we need a callback function?
         //TODO sanity checks
