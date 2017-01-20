@@ -2,12 +2,12 @@
  * Created by fimka on 17/01/2017.
  */
 $ = require('jquery');
-var fileReader = require('./www/fileReader');
-var server = require('./../WebServer/hujiwebserver');
+let fileReader = require('./www/fileReader');
+let server = require('./../WebServer/hujiwebserver');
 server.start(8081);
 
 //Store the last score
-var gambling = {
+let gambling = {
   ones: 0,
     zeros: 0
 };

@@ -207,6 +207,9 @@ httpResponse.prototype.checkContentType = function (content) {
  * @return {httpResponse}
  */
 httpResponse.prototype.writeResponse = function(content){
+    if(!content || content === null) {
+        content = '';
+    }
     let chunk = content;
     this.checkContentType(content);
 
