@@ -30,23 +30,27 @@ router.prototype.addRoute = function(path, middleWare)
     this.controllerSet.push({commandObj: command_input, middleWare: middleWare});
 };
 
-router.prototype.makeRouteHandleIterator = function(originalArr, path, req, socket) {
+router.prototype.makeRouteHandleIterator = function(originalArr, path, req, response, socket) {
     let nextIndex = 0;
     let currentArray;
+
     var next =  function () {
         currentArray = originalArr.slice(nextIndex);
         if(nextIndex < originalArr.length){
             for(let idx in currentArray){
-                let entry = currentArray[idx];
                 if(checkMatch(currentArray[idx].commandObj.path, path)){
                     nextIndex += parseInt(idx) + 1;
                     let urlParams = req.path.split('/');
+
+                    if(currentArray[idx].commandObj.command_params !== {}){
+                        req.params = {}
+                    }
+
                     for (var param in currentArray[idx].commandObj.command_params) {
                         if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
                           req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
                         }
                     }
-                    let response = new httpResponse(socket, req.type);
                     currentArray[idx].middleWare(req, response, next);
                     return {done: false}
                 }
@@ -54,8 +58,8 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, sock
         }
         //TODO if we here we are in not found?
         //TODO swith to httpStandart
-        let response = (new httpResponse(socket, req.type));
-        response.status(404).send(STATUS_CODES[404]);
+        let errorRes = (new httpResponse(socket, req.type));
+        errorRes.status(404).send(STATUS_CODES[404]);
         return {done: true};
     };
     return next();
@@ -83,7 +87,8 @@ function checkMatch(curPath, reqCheckPath) {
 }
 
  router.prototype.httpHandler = function(req, socket) {
-     this.makeRouteHandleIterator(this.controllerSet, req.path, req, socket);
+     let response = new httpResponse(socket, req.type);
+     this.makeRouteHandleIterator(this.controllerSet, req.path, req, response, socket);
 };
 
 
