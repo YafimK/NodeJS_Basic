@@ -12,6 +12,20 @@ let gambling = {
     zeros: 0
 };
 
+/**
+ * Button “new game” that resets the game
+ Reset the number of zeros and ones users have chose so far
+ You should let the server know by sending “/gamble/reset” (DELETE)
+ * @param req
+ * @param res
+ * @param next
+ */
+function resetGame(req, res, next){
+    gambling.ones = 0;
+    gambling.zeros = 0;
+}
+
+server.use('/gamble/reset', resetGame);
 
 /**
  * Button “0” means that the user choose “0”
@@ -27,6 +41,16 @@ function buttonClickResult(req, res, next){
     let gambelingDict = {1: 'ones', 0: 'zeros'};
     let currentChoice = req.params.chosenNumber;
     if(currentChoice && gambelingDict.hasOwnProperty(currentChoice))
+
+    let gamblingDict = {
+        1: "ones",
+        0: "zeros"
+    };
+    if(!gamblingDict.hasOwnProperty(req.params.chosenNumber)){
+        next();
+    }
+    let currentChoice = gamblingDict[req.params.chosenNumber];
+    if(currentChoice)
     {
         if((currentChoice === 1) && (gambling.ones > gambling.zeros)){
             //user won
@@ -53,20 +77,6 @@ function buttonClickResult(req, res, next){
 
 server.use('/gamble/:chosenNumber', buttonClickResult);
 
-/**
- * Button “new game” that resets the game
- Reset the number of zeros and ones users have chose so far
- You should let the server know by sending “/gamble/reset” (DELETE)
- * @param req
- * @param res
- * @param next
- */
-function resetGame(req, res, next){
-    gambling.ones = 0;
-    gambling.zeros = 0;
-}
-
-server.use('/gamble/reset', resetGame);
 
 
 /**

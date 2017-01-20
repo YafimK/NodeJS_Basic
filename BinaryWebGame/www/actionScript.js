@@ -16,23 +16,23 @@ function userChoice(event) {
         alert( "success: " + JSON.stringify(response));
     })
     .fail(function() {
-        alert( "error" );
+        console.trace( "we have an issue in passing the gambling with: " );
     })
     .always(function() {
-        alert( "complete" );
+        console.log( "complete" );
     });
 }
 
 function resetGame(){
-    $.ajax("/gamble/reset")
+    $.ajax({url: "/gamble/reset", method: 'DELETE'})
         .done(function(response) {
             console.log( "success in resetting the game" );
     })
     .fail(function() {
-        console.warn( "error in resting the game" );
+        console.trace( "error in resting the game: " );
     })
     .always(function() {
-        console.warn( "completed reset request" );
+        console.log( "completed reset request" );
     });
 }
 
