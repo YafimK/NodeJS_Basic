@@ -42,16 +42,9 @@ var httpRequest = {
                         });});
                     value = _this.cookies;
                  }
-                 else if(param === "query"){
-                    //TODO check if we can delete elseif
-                    let queryStore = value.split(';');
-                    queryStore.forEach(function(query){
-                        query.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, queryHeader, queryField) {
-                            _this.query[queryHeader] = queryField;
-                        });});
-                    value = _this.query;
-
-                }
+                 else if(param.toLowerCase() === 'content-type' && value.indexOf('; charset=') >= 0){
+                    value = value.trim().substr(0, value.indexOf('; charset='));
+                 }
                 matchPram = true
                 headerList[param] = value;
             });
@@ -171,8 +164,8 @@ var httpRequest = {
                 return this.get('content-type') === arguments[i];
             }
 
-            for (var mimetype in constants.MimeTypes) {
-                if (constants.MimeTypes.hasOwnProperty(mimetype)
+            for (var mimetype in MIME_TYPES) {
+                if (MIME_TYPES.hasOwnProperty(mimetype)
                     && MIME_TYPES[mimetype].hasOwnProperty('extensions')
                     && MIME_TYPES[mimetype].extensions.indexOf(arguments[i]) >= 0) {
 
