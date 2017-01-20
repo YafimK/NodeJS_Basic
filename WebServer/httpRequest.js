@@ -68,7 +68,7 @@ var httpRequest = {
         let queryStore = queryString.split(';');
         queryStore.forEach(function(query){
             query.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, queryHeader, queryField) {
-                returnQuery[queryHeader] = queryField;
+                returnQuery[queryHeader] = queryField.replace("+"," ");
             });});
         return returnQuery;
 
