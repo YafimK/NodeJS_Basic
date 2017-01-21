@@ -178,9 +178,7 @@ var httpRequest = {
         }
     },
 
-    param(param){
-        //TODO do we need a callback function?
-        //TODO sanity checks
+    param(param, callback){
         if (null != this.body[param]){
             return this.body[param];
         }
@@ -193,7 +191,7 @@ var httpRequest = {
         } return this.query[param];
 
 
-        return {};
+        return callback;
     }
 };
 

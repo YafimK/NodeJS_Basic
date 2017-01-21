@@ -11,48 +11,75 @@
 
  */
 
-let webserver1 = require("./hujiwebserver");
-// webserver.use('add/:a/:b', function(rq,rs){rs.send(rq.params.a+rq.params.b)}).start(8080);
-webserver1.use( '/jenkins', function(rq,rs,nxt){ rs.send("ewewe") }).start(8080);
+const fs = require('fs');
+let STATUS_CODES = require('./httpStandard').STATUS_CODES;
 
-webserver1.use('/hello', function (req, res, next){
-    console.log("inside hello ");
-    next();
-
-});
-
-webserver1.use('/hello/world', function (req, res, next){
-    //res.set();
-    res.send("world!");
-
-});
-
-var net = require('net');
-
-var client = new net.Socket();
-client.connect(8080, '127.0.0.1', function() {
-
-    console.log('CONNECTED TO: localhost:' + 8080);
-
-    // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
-    client.write('GET http://www.baidu.com HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n');
-});
-
-// Add a 'data' event handler for the client socket
-// data is what the server sent to this socket
-client.on('data', function(data) {
-
-    console.log('sent DATA: ' + data);
-    // Close the client socket completely
-    client.destroy();
-
-});
-
-// Add a 'close' event handler for the client socket
-client.on('close', function() {
-    console.log('Connection closed');
-});
+var httpServer = require('./hujiwebserver');
 
 
+// USE RUNS
+httpServer
+    .use('/hello/world',
+        function(rq,rs,n) {
+            rs.set('content-type','text/plain');
+            rs.send('hello world');
+        })
+    .use('/add/:n/:m',
+        function(rq,rs,n) {
+            rs.set('content-type','application/json');
+            rs.json({result: rq.params.n * rq.params.m});
+        })
+    .use('/filez/*',
+        function(rq,rs,n) {
+            const filename = rq.path.substr(1);
+
+            if (filename.endsWith('.js')) {
+                rs.set('content-type','application/javascript');
+
+            } else if (filename.endsWith('.html')) {
+                rs.set('content-type','text/html');
+
+            } else if (filename.endsWith('.css')) {
+                rs.set('content-type','text/css');
+
+            } else {
+                rs.status(500).send(STATUS_CODES[500]);
+                return;
+            }
+
+            fs.readFile(filename, function (err, data) {
+                if (err) {
+                    rs.status(500).send(STATUS_CODES[500]);
+                    return;
+                }
+
+                rs.set('content-length', data.toString());
+                rs.send(data.toString());
+            });
+        });
+
+var server = httpServer.start(8080, function(err){console.log(err);});
+
+var http = require('http');
+setTimeout(function() {
+    http.request(
+        {host: 'localhost', port: 8080,  path: '/hello/world'},
+        function(response) {
+            response.on('data', function(data) {console.log(data.toString());})
+        }).end();
+
+    http.request(
+        {host: 'localhost', port: 8080,  path: '/add/7/6'},
+        function(response) {
+            response.on('data', function(data) {console.log(data.toString());})
+        }).end();
 
 
+    http.request(
+        {host: 'localhost', port: 8080,  path: '/filez/simple.js'},
+        function(response) {
+            response.on('data', function(data) {console.log(data.toString());})
+        }).end();
+
+    setTimeout(server.stop, 1000);
+}, 1000);

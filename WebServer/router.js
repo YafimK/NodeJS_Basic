@@ -13,8 +13,7 @@ router.prototype.controllerSet =  [];
 
 router.prototype.addRoute = function(path, middleWare)
 {
-
-    //TODO: check if middleware is function with typeof
+    //TODO: what if middleware doesn't exist?
     this.path = path || "/";
     var commandParams = {}
     path.split('/').forEach(function (elem, i) {
@@ -51,13 +50,19 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
                           req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
                         }
                     }
+
+                    socket.setTimeout(10000, function ()
+                    {
+                       if(socket.readyState === 3 || socket.readyState === 2){
+                           return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                       }
+                    });
+
                     currentArray[idx].middleWare(req, response, next);
-                    return {done: false}
+                    return {done: true}
                 }
             }
         }
-        //TODO if we here we are in not found?
-        //TODO swith to httpStandart
         let errorRes = (new httpResponse(socket, req.type));
         errorRes.status(404).send(STATUS_CODES[404]);
         return {done: true};
