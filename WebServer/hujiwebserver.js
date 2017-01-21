@@ -12,11 +12,11 @@ let STATUS_CODES = require('./httpStandard').STATUS_CODES;
 function socketHandler(socket) {
     socket.setKeepAlive(false);
     //TODO change timeout to 25000
-    // socket.setTimeout(250000000, function ()
-    // {
-    //     console.log("connection timed out!" + socket.host + ":" + socket.port);
-    //     socket.end();
-    // });
+    socket.setTimeout(25000, function ()
+    {
+        console.log("connection timed out!" + socket.host + ":" + socket.port);
+        socket.end();
+    });
 
     socket.on('error', function (err) {
         console.error("Caught error:" + err);
@@ -97,7 +97,7 @@ function start(port, callback) {
         //TODO uncomment
         //console.log("starting server with port: " + this.port + " and callback " + this.callback);
         let server = new ServerObj(this.port)
-        callback();
+        this.callback();
         return server
     } catch (err) {
         this.callback(err);
