@@ -41,6 +41,7 @@ function resetGame(){
         $("<div class='votingButtons'></div>").appendTo("#gameView");
         $("<input id=\"user1choice\" type=\"button\" value=\"1\">").appendTo(".votingButtons");
         $("<input id=\"user0choice\" type=\"button\" value=\"0\">").appendTo(".votingButtons");
+        $("<br>").appendTo(".votingButtons");
         $("<input id=\"newGame\" type=\"button\" value=\"New game\">").appendTo(".votingButtons");
         $("#user1choice").click({userNum: 1, numStr: 'ones'}, userChoice);
         $("#user0choice").click({userNum: 0, numStr: 'zeros'}, userChoice);
