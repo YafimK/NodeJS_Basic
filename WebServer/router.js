@@ -18,17 +18,17 @@ router.prototype.controllerSet =  [];
 router.prototype.addRoute = function(path, middleWare)
 {
     this.path = path || "/";
-    var commandParams = {}
+    let commandParams = {}
     path.split('/').forEach(function (elem, i) {
 
         if (elem.startsWith(':')) {
             commandParams[elem.substr(1)] = i;
         }
-    })
-    var command_input ={
+    });
+    let command_input ={
         path: this.path,
         command_params: commandParams
-    }
+    };
     this.controllerSet.push({commandObj: command_input, middleWare: middleWare});
 };
 
@@ -93,11 +93,11 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
  */
 
 function checkMatch(curPath, reqCheckPath) {
-    var matchRegex = "^";
-    var matchRegexObject;
+    let matchRegex = "^";
+    let matchRegexObject;
 
-    var splitPath = curPath.split('\/');
-    for (var i = 0; i < splitPath.length; i++) {
+    let splitPath = curPath.split('\/');
+    for (let i = 0; i < splitPath.length; i++) {
         if (splitPath[i] !== "") {
             matchRegex += "\/";
             if ((splitPath[i].match(/:/g))) {
@@ -112,7 +112,7 @@ function checkMatch(curPath, reqCheckPath) {
     }
     matchRegex += '($|\/)';
     matchRegexObject = new RegExp(matchRegex, "i");
-    return reqCheckPath.match(matchRegexObject)
+    return reqCheckPath.match(matchRegexObject);
 }
 /**
  * Operate middleware handler generator.

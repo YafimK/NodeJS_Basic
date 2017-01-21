@@ -101,7 +101,6 @@ function start(port, callback) {
 }
 
 function use(command, middleware) {
-    //Preatify!
     function invalidUseOfUseFunc() {
         throw "Incorrect arguments: use function must provide path and middle ware or just middle " +
         "ware to be used with default path \"/\" "

@@ -32,7 +32,7 @@ var httpRequest = {
         let headerRegEx = /(\b[^:]+):\s+([^']+)/g;
         let headerList = {};
         let _this = this;
-        var matchPram = false
+        let matchPram = false;
         headers.forEach(function(row)
         {
             row.trim().replace(headerRegEx, function ($0, param, value) {
@@ -48,7 +48,7 @@ var httpRequest = {
                  else if(param.toLowerCase() === 'content-type' && value.indexOf('; charset=') >= 0){
                     value = value.trim().substr(0, value.indexOf('; charset='));
                  }
-                matchPram = true
+                matchPram = true;
                 headerList[param] = value;
             });
             if(!matchPram){
@@ -78,8 +78,8 @@ var httpRequest = {
             matchPram = false
         });
         this.reqHeaders = headerList;
-        this.path = this.reqUrl.pathname
-        this.protocol = this.type
+        this.path = this.reqUrl.pathname;
+        this.protocol = this.type;
         this.query = this.parseQuery(this.reqUrl.query);
         this.host = this.reqHeaders["host"];
         //this.cookies = this.reqHeaders["cookie"]
@@ -90,9 +90,9 @@ var httpRequest = {
      * @returns parsed query
      */
     parseQuery(queryString){
-        let returnQuery = {}
+        let returnQuery = {};
         if(!queryString){
-            return returnQuery
+            return returnQuery;
         }
 
         let queryStore = queryString.split(';');
@@ -153,16 +153,16 @@ var httpRequest = {
      */
 
     is(types){
-        var arr = types;
+        let arr = types;
 
         arr = new Array(arguments.length);
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
 
             if (MIME_TYPES.hasOwnProperty(arguments[i])) {
                 return this.get('content-type') === arguments[i];
             }
 
-            for (var mimetype in MIME_TYPES) {
+            for (let mimetype in MIME_TYPES) {
                 if (MIME_TYPES.hasOwnProperty(mimetype)
                     && MIME_TYPES[mimetype].hasOwnProperty('extensions')
                     && MIME_TYPES[mimetype].extensions.indexOf(arguments[i]) >= 0) {
