@@ -58,7 +58,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
                         req.params = {}
                     }
 
-                    for (var param in currentArray[idx].commandObj.command_params) {
+                    for (let param in currentArray[idx].commandObj.command_params) {
                         if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
                           req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
                         }
@@ -68,7 +68,7 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
                     {
                         if(socket.readyState !== 3){
                             console.log('Middleware times out.')
-                            var res = (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                            let res = (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
                         }
                     },10000);
 

@@ -149,7 +149,7 @@ var httpRequest = {
      *  Returns the specified HTTP request header field (case-insensitive match).
      *  The Referrer and Referer fields are interchangeable.e.
      * @param types
-     * @return True if found otherwise false.
+     * @return boolean if found otherwise false.
      */
 
     is(types){
