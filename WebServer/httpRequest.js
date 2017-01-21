@@ -61,10 +61,10 @@ var httpRequest = {
 
                     }
                     else if(!headerList['content-type'] === false && headerList['content-type'] === 'application/x-www-form-urlencoded'){
-                        var bodyObj = {};
+                        let bodyObj = {};
 
                         row.trim().split('&').forEach(function (elem) {
-                                var matches = elem.trim().split('=');
+                                let matches = elem.trim().split('=');
                                 bodyObj[matches[0]] = matches[1];
                             });
 

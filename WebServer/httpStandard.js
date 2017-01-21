@@ -5456,7 +5456,7 @@ const MimeTypes = {
     },
     "x-shader/x-fragment": {},
     "x-shader/x-vertex": {}
-}
+};
 
 const STATUS_CODES = {
     'Continue': '100',

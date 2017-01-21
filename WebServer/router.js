@@ -46,31 +46,30 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
     let nextIndex = 0;
     let currentArray;
 
-    var next =  function () {
+    let next = function () {
         currentArray = originalArr.slice(nextIndex);
-        if(nextIndex < originalArr.length){
-            for(let idx in currentArray){
-                if(checkMatch(currentArray[idx].commandObj.path, path)){
+        if (nextIndex < originalArr.length) {
+            for (let idx in currentArray) {
+                if (checkMatch(currentArray[idx].commandObj.path, path)) {
                     nextIndex += parseInt(idx) + 1;
                     let urlParams = req.path.split('/');
 
-                    if(currentArray[idx].commandObj.command_params !== {}){
+                    if (currentArray[idx].commandObj.command_params !== {}) {
                         req.params = {}
                     }
 
                     for (let param in currentArray[idx].commandObj.command_params) {
                         if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
-                          req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
+                            req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
                         }
                     }
 
-                    const timeout = setTimeout(function ()
-                    {
-                        if(socket.readyState !== 3){
+                    const timeout = setTimeout(function () {
+                        if (socket.readyState !== 3) {
                             console.log('Middleware times out.');
                             let res = (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
                         }
-                    },10000);
+                    }, 10000);
 
                     currentArray[idx].middleWare(req, response, next);
                     clearTimeout(timeout);

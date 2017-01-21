@@ -75,7 +75,7 @@ function ServerObj(port) {
 
     server.listen(this.port);//.setTimeout(25000);
      ServerObj.prototype.stop = function() {
-         console.log('Server closing server...')
+         console.log('Server closing server...');
          server.close();
          console.log('Server closed.')
     }
@@ -91,7 +91,7 @@ function start(port, callback) {
     this.port = port;
     try {
         console.log("starting server with port: " + this.port);
-        let server = new ServerObj(this.port)
+        let server = new ServerObj(this.port);
         this.callback();
         return server
     } catch (err) {

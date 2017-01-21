@@ -36,7 +36,7 @@ var server = myHTTPserver
 
 			// TODO non-ascii chars are broken
 			rs.set('content-length', data.toString());
-			console.warn("reponse is startunknown");console.log('USE Func4 ','content-type: ', rs.get('content-type'), 'content-length: ',rs.get('content-length'), 'data: ', data.toString())
+			console.warn("reponse is startunknown");console.log('USE Func4 ','content-type: ', rs.get('content-type'), 'content-length: ',rs.get('content-length'), 'data: ', data.toString());
 			rs.send(data.toString());
 		});
 	})
