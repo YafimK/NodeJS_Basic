@@ -57,7 +57,10 @@ httpServer
             });
         });
 
-var server = httpServer.start(8080, function(err){console.log(err);});
+var server = httpServer.start(8080, function(err){
+    if(err !== undefined){
+        console.log(err);
+    }});
 
 var http = require('http');
 setTimeout(function() {

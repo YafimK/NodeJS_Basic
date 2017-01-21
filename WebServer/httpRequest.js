@@ -138,13 +138,10 @@ var httpRequest = {
      */
     get(headerName){
 
-        if (!headerName) {
-            throw new TypeError('There is no content type');
+        if (!headerName || typeof headerName !== 'string') {
+            throw new TypeError('Please send string param');
         }
 
-        if (typeof headerName !== 'string') {
-            throw new TypeError('Handle only strings');
-        }
         return this.reqHeaders[headerName.toLowerCase()]
 
     },
@@ -185,6 +182,14 @@ var httpRequest = {
      * @return value of param if found.
      */
     param(param, callback){
+        if(!param || typeof param !== 'string'){
+            throw Error("We need param to check")
+        }
+        if(!callback){
+            callback = undefined
+        }
+
+
         if (null != this.body[param]){
             return this.body[param];
         }
@@ -193,8 +198,9 @@ var httpRequest = {
             return this.params[param];
         }
         if (null != this.query[param]){
+            return this.query[param];
 
-        } return this.query[param];
+        }
 
 
         return callback;

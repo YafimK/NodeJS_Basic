@@ -66,10 +66,9 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
 
                     const timeout = setTimeout(function ()
                     {
-                        console.log('here time')
                         if(socket.readyState !== 3){
                             console.log('Middleware times out.')
-                            (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                            var res = (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
                         }
                     },10000);
 

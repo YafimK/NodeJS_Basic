@@ -34,8 +34,7 @@ function socketHandler(socket) {
     }
 
     socket.on('end', function () {
-        //TODO uncomment
-        //console.log('server disconnected');
+        console.log('closing socket ' + socket.remotePort);
     });
 
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
@@ -43,9 +42,8 @@ function socketHandler(socket) {
     let requestData = "";
 
     socket.on('data', function (data, err) {
-        //TODO uncomment
-        console.log("new socket")
-        //console.log('received DATA ' + socket.remoteAddress + ': ' + data);
+
+        console.log('received DATA ' + socket.remotePort);
         requestData += data;
         if (err) {
             throw err;
@@ -55,7 +53,7 @@ function socketHandler(socket) {
             try{
                 treatRequest();
             }catch(err){
-                (new httpResponse(socket, '')).status(500).send(STATUS_CODES[500] +'\r\n'+ err);;
+                (new httpResponse(socket, '')).status(500).send(STATUS_CODES[500] +'\r\n'+ err);
             }
 
 
@@ -66,8 +64,7 @@ function socketHandler(socket) {
         if (had_error === true) {
             console.error("connection closed with error");
         }
-        //TODO uncomment
-        //console.log('CLOSED: ' + socket.remoteAddress + ' ' + socket.remotePort);
+        console.log('CLOSED:' + socket.remotePort);
     });
 
 }
@@ -77,8 +74,6 @@ function ServerObj(port) {
     let server = net.createServer(socketHandler);
 
     server.listen(this.port);//.setTimeout(25000);
-    //TODO uncomment
-    //console.log('Server starting on socket: ' + this.port);
      ServerObj.prototype.stop = function() {
         server.close();
     }
@@ -93,8 +88,7 @@ function start(port, callback) {
     this.callback = callback || defCallback;
     this.port = port;
     try {
-        //TODO uncomment
-        //console.log("starting server with port: " + this.port + " and callback " + this.callback);
+        console.log("starting server with port: " + this.port);
         let server = new ServerObj(this.port)
         this.callback();
         return server
