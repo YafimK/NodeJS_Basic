@@ -75,7 +75,9 @@ function ServerObj(port) {
 
     server.listen(this.port);//.setTimeout(25000);
      ServerObj.prototype.stop = function() {
-        server.close();
+         console.log('Server closing server...')
+         server.close();
+         console.log('Server closed.')
     }
 }
 
