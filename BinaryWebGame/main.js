@@ -12,40 +12,39 @@ let gambling = {
     zeros: 0
 };
 
-
-/**
- * Button “0” means that the user choose “0”
- You should let the server know which number the user chose by sending a message to the “/gamble/0” (POST)
- You should do that using AJAX
- The server should keep counting how many users gambled on each number 0 or 1
- The server should respond with the following JSON: {“zeros”:<numberOfZeros>,”ones”:<numberOfOnes>} the client should announce if the user won/lost/tie and how many users chose each number by adding text/HTML into the screen and hide the “0” and “1” buttons.
- * @param req
- * @param res
- * @param next
- */
-function buttonClickResult(req, res, next){
-    let currentChoice = req.params.chosenNumber;
-    if(currentChoice)
-    {
-
-    }
-}
-
-server.use('/gamble/:chosenNumber', buttonClickResult);
-
 /**
  * Button “new game” that resets the game
- Reset the number of zeros and ones users have chose so far
- You should let the server know by sending “/gamble/reset” (DELETE)
  * @param req
  * @param res
  * @param next
  */
 function resetGame(req, res, next){
-
+    gambling.ones = 0;
+    gambling.zeros = 0;
 }
 
 server.use('/gamble/reset', resetGame);
+
+/**
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+function buttonClickResult(req, res, next){
+    let gamblingDict = {1: 'ones', 0: 'zeros'};
+    if(!gamblingDict.hasOwnProperty(req.params.chosenNumber)){
+        next();
+    }
+    let currentChoice = gamblingDict[req.params.chosenNumber];
+    if(currentChoice)
+    {
+        gambling[currentChoice] += 1;
+    }
+    res.status(200).json(gambling)
+}
+server.use('/gamble/:chosenNumber', buttonClickResult);
+
 
 
 /**
