@@ -21,7 +21,10 @@ var httpRequest = {
     query: {},
     cookies:{},
 
-
+    /**
+     * Parse and set request params
+     * @param params
+     */
     setRequestParams(params) {
         let reqLine = params[0];
         this.setBaseParams(reqLine);
@@ -127,6 +130,12 @@ var httpRequest = {
     setHttpType(type){
         this.type = type.trim();
     },
+    /**
+     * Returns the specified HTTP request header field (case-insensitive match).
+     * The Referrer and Referer fields are interchangeable.
+     * @param headerName.
+     * @return asked header value if found
+     */
     get(headerName){
 
         if (!headerName) {
@@ -169,6 +178,12 @@ var httpRequest = {
         }
     },
 
+    /**
+     * Returns the value of param name when present.
+     * @param param
+     * @param callback
+     * @return value of param if found.
+     */
     param(param, callback){
         if (null != this.body[param]){
             return this.body[param];

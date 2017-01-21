@@ -10,7 +10,11 @@ let router = function() {
 };
 
 router.prototype.controllerSet =  [];
-
+/**
+ * Adds commands invoked from use.
+ * @param path
+ * @param middleWare
+ */
 router.prototype.addRoute = function(path, middleWare)
 {
     this.path = path || "/";
@@ -27,6 +31,16 @@ router.prototype.addRoute = function(path, middleWare)
     }
     this.controllerSet.push({commandObj: command_input, middleWare: middleWare});
 };
+
+/**
+ * Runs on the path of the request aginst commands from use function
+ * if match detected invoke the suitable method.
+ * @param originalArr
+ * @param path
+ * @param req
+ * @param response
+ * @param socket
+ */
 
 router.prototype.makeRouteHandleIterator = function(originalArr, path, req, response, socket) {
     let nextIndex = 0;
@@ -50,16 +64,17 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
                         }
                     }
 
-                    socket.setTimeout(10000, function ()
+                    const timeout = setTimeout(function ()
                     {
-                        console.log('here')
-                       if(socket.readyState !== 3 && socket.readyState !== 2){
-                           console.log('Middleware times out.')
-                           return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
-                       }
-                    });
+                        console.log('here time')
+                        if(socket.readyState !== 3){
+                            console.log('Middleware times out.')
+                            (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                        }
+                    },10000);
 
                     currentArray[idx].middleWare(req, response, next);
+                    clearTimeout(timeout)
                     return {done: true}
                 }
             }
@@ -70,6 +85,13 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
     };
     return next();
 };
+/**
+ * Checks match between current path to current command path
+ * we examine
+ * @param curPath
+ * @param reqCheckPath
+ * @return array of groups if there is match otherwise undefined.
+ */
 
 function checkMatch(curPath, reqCheckPath) {
     var matchRegex = "^";
@@ -93,6 +115,11 @@ function checkMatch(curPath, reqCheckPath) {
     matchRegexObject = new RegExp(matchRegex, "i");
     return reqCheckPath.match(matchRegexObject)
 }
+/**
+ * Operate middleware handler generator.
+ * @param req
+ * @param socket
+ */
 
  router.prototype.httpHandler = function(req, socket) {
      let response = new httpResponse(socket, req.type);

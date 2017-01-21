@@ -11,7 +11,6 @@ let STATUS_CODES = require('./httpStandard').STATUS_CODES;
 
 function socketHandler(socket) {
     socket.setKeepAlive(false);
-    //TODO change timeout to 25000
     socket.setTimeout(25000, function ()
     {
         console.log("connection timed out!" + socket.host + ":" + socket.port);
