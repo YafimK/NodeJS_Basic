@@ -45,8 +45,6 @@ httpResponse.prototype.json = function(body)
  * @returns httpResponse object (this)
  */
 httpResponse.prototype.set = function (field, value) {
-    //TODO: add some sanity checks
-
     if(value)
     {
         this.headers.set(field.toLowerCase(), value);

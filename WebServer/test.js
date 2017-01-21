@@ -13,7 +13,6 @@
 
 const fs = require('fs');
 let STATUS_CODES = require('./httpStandard').STATUS_CODES;
-
 var httpServer = require('./hujiwebserver');
 
 

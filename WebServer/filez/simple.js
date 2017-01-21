@@ -1,111 +1,201 @@
-const fs = require('fs');
+/**
+ * Created by fimka on 14/01/2017.
+ */
 
-//minimal usage main.js:
-var myHTTPserver = require('./hujiwebserver');
+let url = require("url");
+let MIME_TYPES = require('./httpStandard').MIME_TYPES;
+let CR = '\r';
+let LF = '\n';
+let CRLF = '\r\n';
 
-// Create a tester test.js (and add it to the EX zip ) that calls your module and starts it on port 8080. It registers the following commands/middlewares
-// /hello/world should return string hello world with content-type text/plain
-// /add/:n/:m should return the json: {result:n*m} with content-type application/json
-// /filez/* should return the file * from the filez folder (that you should add to the EX zip).
-// * can be recursive e.g. /dgsd/dfdf/sfsfs.html <- in this case you should read the <your main js file path>/filez/dgsd/dfdf/sfsfs.html
-// You should only support .html .css and .js files. You should return the right content-type for those :
-// *.js: JavaScript : application/javascript
-// *.html: HTML: text/html
-// *.css: CSS: text/css
+var httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE'];
+var httpRequest = {
+    reqHeaders: {},
+    params: {},
+    reqUrl: '',
+    method: '',
+    type: '',
+    path: '',
+    protocol: '',
+    host: '',
+    query: {},
+    cookies:{},
 
-// USE RUNS
-myHTTPserver
-    .use('/hello/world', // /hello/world should return string hello world with content-type text/plain
-        function(rq,rs,n) {
-            rs.set('content-type','text/plain');
-            rs.send('hello world');
-        })
-    .use('/add/:n/:m', // /add/:n/:m should return the json: {result:n*m} with content-type application/json
-        function(rq,rs,n) {
-            rs.set('content-type','application/json');
-            rs.json({result: rq.params.n * rq.params.m});
-        })
-    .use('/filez/*', // /filez/* should return the file * from the filez folder (that you should add to the EX zip).
-        function(rq,rs,n) {
-            const filename = rq.path.substr(1);
 
-            if (filename.endsWith('.js')) {
-                rs.set('content-type','application/javascript');
+    setRequestParams(params) {
+        let reqLine = params[0];
+        this.setBaseParams(reqLine);
+        let headers = params.slice(1);
+        let headerRegEx = /(\b[^:]+):\s+([^']+)/g;
+        let headerList = {};
+        let _this = this;
+        var matchPram = false
+        headers.forEach(function(row)
+        {
+            row.trim().replace(headerRegEx, function ($0, param, value) {
+                param = param.toString().toLowerCase();
+                if(param === "cookie"){
+                    let cookieStore = value.split(';');
+                    cookieStore.forEach(function(cookie){
+                        cookie.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, cookieHeader, cookieField) {
+                            _this.cookies[cookieHeader] = cookieField;
+                        });});
+                    value = _this.cookies;
+                 }
+                 else if(param.toLowerCase() === 'content-type' && value.indexOf('; charset=') >= 0){
+                    value = value.trim().substr(0, value.indexOf('; charset='));
+                 }
+                matchPram = true
+                headerList[param] = value;
+            });
+            if(!matchPram){
+                if(row === CRLF || row === LF || row === CR ){
+                    matchPram = false
+                }
+                else{
+                    //TODO we need anything else to check?
+                    if(!headerList['content-type'] === false && headerList['content-type'] === 'application/json'){
+                        _this.body = JSON.parse(row.trim());
 
-            } else if (filename.endsWith('.html')) {
-                rs.set('content-type','text/html');
+                    }
+                    else if(!headerList['content-type'] === false && headerList['content-type'] === 'application/x-www-form-urlencoded'){
+                        var bodyObj = {};
 
-            } else if (filename.endsWith('.css')) {
-                rs.set('content-type','text/css');
+                        row.trim().split('&').forEach(function (elem) {
+                                var matches = elem.trim().split('=');
+                                bodyObj[matches[0]] = matches[1];
+                            });
 
-            } else {
-                // TODO 404
-                console.log('print');
-                return;
+                        _this.body = bodyObj;
+                     }
+                    else{
+                        _this.body = row.trim().toString()
+                    }
+                }
+            }
+            matchPram = false
+        });
+        this.reqHeaders = headerList;
+        //TODO path or pathname? path includes query for instance
+        this.path = this.reqUrl.pathname
+        //TODO if we got this far its http?
+        //TODO maybe should be HTTP 1.1
+        this.protocol = "http";
+        this.query = this.parseQuery(this.reqUrl.query);
+        this.host = this.reqHeaders["host"];
+        //this.cookies = this.reqHeaders["cookie"]
+    },
+    parseQuery(queryString){
+        let returnQuery = {}
+        if(!queryString){
+            return returnQuery
+        }
+
+        let queryStore = queryString.split(';');
+        queryStore.forEach(function(query){
+            query.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, queryHeader, queryField) {
+                returnQuery[queryHeader] = queryField.replace("+"," ");
+            });});
+        return returnQuery;
+
+    },
+    setBaseParams(request){
+        let requestType = request.trim().split(/\s+/g);
+        this.setHttpMethod(requestType[0]);
+        this.setHttpUrl(requestType[1]);
+        this.setHttpType(requestType[2]);
+    },
+    setHttpUrl(reqUrl){
+        this.reqUrl = url.parse(reqUrl)
+    },
+    setHttpMethod(method){
+        this.method = method;
+    },
+    setHttpType(type){
+        this.type = type.trim();
+    },
+    getPath(){
+        return this.reqUrl.path;
+    },
+    param(){
+
+    },
+    get(headerName){
+
+        if (!headerName) {
+            throw new TypeError('There is no content type');
+        }
+
+        if (typeof headerName !== 'string') {
+            throw new TypeError('Handle only strings');
+        }
+        //TODO not sure its work need to check
+        return this.reqHeaders[headerName.toLowerCase()]
+
+    },
+
+    checkMatch(curPath, reqCheckPath) {
+    var regexOfHandler = "^";
+    var regexOfHandlerObj;
+
+    var listOfResource = curPath.split('\/');
+    for (var i = 0; i < listOfResource.length; ++i) {
+        if (listOfResource[i] !== "") {
+            regexOfHandler += "\/";
+            if (!(listOfResource[i].match(/:/g))) {
+                regexOfHandler += listOfResource[i];
+            }
+            else {
+                regexOfHandler += "(?:([^\/]+?))";
+            }
+        }
+    }
+    regexOfHandler += '($|\/)';
+    regexOfHandlerObj = new RegExp(regexOfHandler, "i");
+    return reqCheckPath.match(regexOfHandlerObj)
+    },
+
+    is(types){
+        var arr = types;
+
+        arr = new Array(arguments.length);
+        for (var i = 0; i < arr.length; i++) {
+
+            if (MIME_TYPES.hasOwnProperty(arguments[i])) {
+                return this.get('content-type') === arguments[i];
             }
 
-            fs.readFile(filename, function (err, data) {
-                if (err) {
-                    console.log('print2', err);
-                    // TODO server error?
-                    return;
+            for (var mimetype in MIME_TYPES) {
+                if (MIME_TYPES.hasOwnProperty(mimetype)
+                    && MIME_TYPES[mimetype].hasOwnProperty('extensions')
+                    && MIME_TYPES[mimetype].extensions.indexOf(arguments[i]) >= 0) {
+
+                    return this.get('content-type') === mimetype;
+
+
                 }
+            }
+        }
+    },
 
-                // TODO non-ascii chars are broken
-                rs.set('content-length', data.toString());
-                rs.send(data.toString());
-            });
-        });
+    param(param, callback){
+        if (null != this.body[param]){
+            return this.body[param];
+        }
 
-var server = myHTTPserver.start(8080, function(err){console.log(err);});
+        if (null != this.params[param] && this.params.hasOwnProperty(param)){
+            return this.params[param];
+        }
+        if (null != this.query[param]){
 
-var http = require('http');
-setTimeout(function() {
-    // http.request(
-    //     {host: 'localhost', port: 8080,  path: '/hello/world'},
-    //     function(response) {
-    //         response.on('data', function(data) {console.log(data.toString());})
-    //     }).end();
-
-    // http.request(
-    //     {host: 'localhost', port: 8080,  path: '/add/3/2'},
-    //     function(response) {
-    //         response.on('data', function(data) {console.log(data.toString());})
-    //     }).end();
+        } return this.query[param];
 
 
-    http.request(
-        {host: 'localhost', port: 8080,  path: '/filez/simple.html'},
-        function(response) {
-            response.on('data', function(data) {console.log(data.toString());})
-        }).end();
-
-    // setTimeout(server.stop, 1000);
-}, 1000);
-
-//
-//var server = httpServer.start(8080, function(err){console.log(err);});
+        return callback;
+    }
+};
 
 
-//// GET RUNS
-//var http = require('http');
 
-//setTimeout(function() {
-//http.request({host: 'localhost', port: 8080,  path: '/add/1/2'}, function(response) {console.log(response);}).end();
-//setTimeout(server.stop, 1000);
-//}, 1000);
 
-//setTimeout(function() {
-//http.request({host: 'localhost', port: 8080,  path: '/add/grish/eran'}, function(response) {console.log(response);}).end();
-//setTimeout(server.stop, 1000);
-//}, 2000);
-
-//setTimeout(function() {
-//http.request({host: 'localhost', port: 8080,  path: '/add2/a2/b2'}, function(response) {console.log(response);}).end();
-//setTimeout(server.stop, 1000);
-//}, 3000);
-
-//setTimeout(function() {
-//http.request({host: 'localhost', port: 8080,  path: '/add3/grish/b3'}, function(response) {console.log(response);}).end();
-//setTimeout(server.stop, 1000);
-//}, 4000);
+module.exports = httpRequest;

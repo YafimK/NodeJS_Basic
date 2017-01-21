@@ -53,7 +53,6 @@ var httpRequest = {
                     matchPram = false
                 }
                 else{
-                    //TODO we need anything else to check?
                     if(!headerList['content-type'] === false && headerList['content-type'] === 'application/json'){
                         _this.body = JSON.parse(row.trim());
 
@@ -76,11 +75,8 @@ var httpRequest = {
             matchPram = false
         });
         this.reqHeaders = headerList;
-        //TODO path or pathname? path includes query for instance
         this.path = this.reqUrl.pathname
-        //TODO if we got this far its http?
-        //TODO maybe should be HTTP 1.1
-        this.protocol = "http";
+        this.protocol = this.type
         this.query = this.parseQuery(this.reqUrl.query);
         this.host = this.reqHeaders["host"];
         //this.cookies = this.reqHeaders["cookie"]
@@ -129,7 +125,6 @@ var httpRequest = {
         if (typeof headerName !== 'string') {
             throw new TypeError('Handle only strings');
         }
-        //TODO not sure its work need to check
         return this.reqHeaders[headerName.toLowerCase()]
 
     },

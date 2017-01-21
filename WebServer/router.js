@@ -13,7 +13,6 @@ router.prototype.controllerSet =  [];
 
 router.prototype.addRoute = function(path, middleWare)
 {
-    //TODO: what if middleware doesn't exist?
     this.path = path || "/";
     var commandParams = {}
     path.split('/').forEach(function (elem, i) {
@@ -53,7 +52,9 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
 
                     socket.setTimeout(10000, function ()
                     {
-                       if(socket.readyState === 3 || socket.readyState === 2){
+                        console.log('here')
+                       if(socket.readyState !== 3 && socket.readyState !== 2){
+                           console.log('Middleware times out.')
                            return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
                        }
                     });
@@ -71,24 +72,26 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
 };
 
 function checkMatch(curPath, reqCheckPath) {
-    var regexOfHandler = "^";
-    var regexOfHandlerObj;
+    var matchRegex = "^";
+    var matchRegexObject;
 
-    var listOfResource = curPath.split('\/');
-    for (var i = 0; i < listOfResource.length; ++i) {
-        if (listOfResource[i] !== "") {
-            regexOfHandler += "\/";
-            if (!(listOfResource[i].match(/:/g))) {
-                regexOfHandler += listOfResource[i];
+    var splitPath = curPath.split('\/');
+    for (var i = 0; i < splitPath.length; i++) {
+        if (splitPath[i] !== "") {
+            matchRegex += "\/";
+            if ((splitPath[i].match(/:/g))) {
+
+                matchRegex += "(?:([^\/]+?))";
             }
             else {
-                regexOfHandler += "(?:([^\/]+?))";
+                matchRegex += splitPath[i];
+
             }
         }
     }
-    regexOfHandler += '($|\/)';
-    regexOfHandlerObj = new RegExp(regexOfHandler, "i");
-    return reqCheckPath.match(regexOfHandlerObj)
+    matchRegex += '($|\/)';
+    matchRegexObject = new RegExp(matchRegex, "i");
+    return reqCheckPath.match(matchRegexObject)
 }
 
  router.prototype.httpHandler = function(req, socket) {

@@ -128,7 +128,7 @@ function use(command, middleware) {
         }
     }
 
-    //TODO: check if middleware is function with typeof
+
 
     router.addRoute(command, middleware);
 
