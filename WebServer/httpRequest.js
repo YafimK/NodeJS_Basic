@@ -86,8 +86,8 @@ var httpRequest = {
     },
     /**
      * Parse query to field and values.
-     * @param Query to parse
-     * @returns parsed query
+     * @returns {} query object
+     * @param queryString
      */
     parseQuery(queryString){
         let returnQuery = {};

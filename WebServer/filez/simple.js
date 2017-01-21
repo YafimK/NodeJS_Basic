@@ -3,7 +3,7 @@
  */
 
 let url = require("url");
-let MIME_TYPES = require('./httpStandard').MIME_TYPES;
+let MIME_TYPES = require('./../httpStandard').MIME_TYPES;
 let CR = '\r';
 let LF = '\n';
 let CRLF = '\r\n';
