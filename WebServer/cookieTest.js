@@ -173,9 +173,9 @@ hujiwebserver.use('/response/test/json/:id', function (req, res, next) {
 
 hujiwebserver.use('/response/test/next', function (req, res, next) {
     res.body = 'next1;'
-    while(true){
-
-    }
+    // while(true){
+    //
+    // }
     next();
 });
 

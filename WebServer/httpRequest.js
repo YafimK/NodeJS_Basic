@@ -81,6 +81,11 @@ var httpRequest = {
         this.host = this.reqHeaders["host"];
         //this.cookies = this.reqHeaders["cookie"]
     },
+    /**
+     * Parse query to field and values.
+     * @param Query to parse
+     * @returns parsed query
+     */
     parseQuery(queryString){
         let returnQuery = {}
         if(!queryString){
@@ -95,6 +100,10 @@ var httpRequest = {
         return returnQuery;
 
     },
+    /**
+     * Set basic parameters from the request
+     * @param request
+     */
     setBaseParams(request){
         let requestType = request.trim().split(/\s+/g);
         this.setHttpMethod(requestType[0]);
@@ -104,17 +113,19 @@ var httpRequest = {
     setHttpUrl(reqUrl){
         this.reqUrl = url.parse(reqUrl)
     },
+    /**
+     * Setter for method.
+     * @param method
+     */
     setHttpMethod(method){
         this.method = method;
     },
+    /**
+     * Setter for type.
+     * @param type
+     */
     setHttpType(type){
         this.type = type.trim();
-    },
-    getPath(){
-        return this.reqUrl.path;
-    },
-    param(){
-
     },
     get(headerName){
 
@@ -128,27 +139,12 @@ var httpRequest = {
         return this.reqHeaders[headerName.toLowerCase()]
 
     },
-
-    checkMatch(curPath, reqCheckPath) {
-    var regexOfHandler = "^";
-    var regexOfHandlerObj;
-
-    var listOfResource = curPath.split('\/');
-    for (var i = 0; i < listOfResource.length; ++i) {
-        if (listOfResource[i] !== "") {
-            regexOfHandler += "\/";
-            if (!(listOfResource[i].match(/:/g))) {
-                regexOfHandler += listOfResource[i];
-            }
-            else {
-                regexOfHandler += "(?:([^\/]+?))";
-            }
-        }
-    }
-    regexOfHandler += '($|\/)';
-    regexOfHandlerObj = new RegExp(regexOfHandler, "i");
-    return reqCheckPath.match(regexOfHandlerObj)
-    },
+    /**
+     *  Returns the specified HTTP request header field (case-insensitive match).
+     *  The Referrer and Referer fields are interchangeable.e.
+     * @param types
+     * @return True if found otherwise false.
+     */
 
     is(types){
         var arr = types;
