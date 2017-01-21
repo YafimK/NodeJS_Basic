@@ -89,6 +89,8 @@ function resetGame(){
         $("<tbody></tbody>").appendTo(".resultsTable");
         $("<tr class='vote0Row'></tr>").appendTo("tbody").append("<td>zeros</td><td>" + result.zeros + "</td>");
         $("<tr class='vote1Row'></tr>").appendTo("tbody").append("<td>ones</td><td>" + result.ones + "</td>");
+        $("<input id=\"newGame\" type=\"button\" value=\"New game\">").appendTo(".annoucment");
+        $("#newGame").click(resetGame);
         $("<span></span>").appendTo(".annoucment").append("<input id=\"backButton\" type=\"button\" value=\"Go back to the game!\">");
         $("#backButton").click(function()
         {
