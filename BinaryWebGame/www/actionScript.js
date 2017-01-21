@@ -80,7 +80,7 @@ function resetGame(){
         }
 
         $("<div class='annoucment'></div>").appendTo("#gameView");
-        $("<p></p>").appendTo(".annoucment").html(annoucment);
+        $("<p id='gameResult'></p>").appendTo(".annoucment").html(annoucment);
         $("<p id=\"results\"></p>").appendTo(".annoucment").html("Votes count per number");
         $("<table class=\"resultsTable\"></table>").appendTo('#results');
         $("<thead></thead>").appendTo(".resultsTable");
@@ -88,7 +88,12 @@ function resetGame(){
         $("<tbody></tbody>").appendTo(".resultsTable");
         $("<tr class='vote0Row'></tr>").appendTo("tbody").append("<td>zeros</td><td>" + result.zeros + "</td>");
         $("<tr class='vote1Row'></tr>").appendTo("tbody").append("<td>ones</td><td>" + result.ones + "</td>");
-
+        $("<span></span>").appendTo(".annoucment").append("<input id=\"backButton\" type=\"button\" value=\"Go back to the game!\">");
+        $("#backButton").click(function()
+        {
+            $(".annoucment").detach();
+            $('div#gameView').append($.fn.showGameVote());
+        });
         return this;
     };
 })( jQuery );

@@ -43,7 +43,6 @@ function buttonClickResult(req, res, next){
     }
     res.status(200).json(gambling)
 }
-
 server.use('/gamble/:chosenNumber', buttonClickResult);
 
 
