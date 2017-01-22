@@ -11,8 +11,8 @@ var httpResponse = function (socket, httpType){
     this.httpType = httpType;
 };
 
-httpResponse.prototype.cookies = {}
-httpResponse.prototype.headers = {}
+httpResponse.prototype.cookies = new Map();
+httpResponse.prototype.headers = new Map();
 httpResponse.prototype.body = '';
 httpResponse.prototype.statusCode = 200;
 httpResponse.prototype.statusMsg = 'OK';
@@ -47,16 +47,13 @@ httpResponse.prototype.json = function(body)
 httpResponse.prototype.set = function (field, value) {
     if(value)
     {
-        //TODO is string
-        this.headers[field.toLowerCase()] = value.toString()
+        this.headers.set(field.toLowerCase(), value);
 
     }
     else if(field) {
         for(let headerName in field)
         {
-            this.headers[headerName.toLowerCase()] = field[headerName].toString()
-            //TODO delete
-           // this.set(headerName, field[headerName].toString());
+           this.set(headerName, field[headerName].toString());
         }
     }
     else{
@@ -199,7 +196,7 @@ httpResponse.prototype.checkContentType = function (content) {
         }
     }
     else if(typeof content === 'object'){
-        return this.json(content)
+        return this.JSON.parse(content)
     }
     else{
         throw TypeError("Doesn't recognize type")
@@ -212,34 +209,12 @@ httpResponse.prototype.checkContentType = function (content) {
  * @return {httpResponse}
  */
 httpResponse.prototype.writeResponse = function(content){
-
-    //TODO ask fima
-    ///this.checkContentType(content);
-    if(!content || content === null){
+    if(!content || content === null) {
         content = '';
-        this.setContentType('text/html');
     }
-    else if(this.get('Content-Type')){
-        //Do nothing
-    }
-    else if(typeof content === 'string'){
-        let dataT = parser.parseDataSeqmant(content);
-        if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
-            this.setContentType('text/html');
-        } else{
-            this.setContentType('text/plain');
-        }
-    }
-    else if(typeof content === 'object'){
-        this.setContentType('application/json');
-        //return create body as json.
-        content = (JSON.stringify(content));
-    }
-    else{
-        throw TypeError("Doesn't recognize type")
-    }
-
     let chunk = content;
+    this.checkContentType(content);
+
     if (204 === this.statusCode || 304 === this.statusCode) {
         this.removeHeader('content-type');
         this.removeHeader("content-length");
