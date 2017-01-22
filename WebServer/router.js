@@ -64,15 +64,15 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
                         }
                     }
 
-                    const timeout = setTimeout(function () {
-                        if (socket.readyState !== 3) {
-                            console.log('Middleware times out.');
-                            let res = (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
-                        }
-                    }, 10000);
+                    // const timeout = setTimeout(function () {
+                    //     if (socket.readyState !== 3) {
+                    //         console.log('Middleware times out.');
+                    //         return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                    //     }
+                    // }, 10000);
 
                     currentArray[idx].middleWare(req, response, next);
-                    clearTimeout(timeout);
+                    // clearTimeout(timeout);
                     return {done: true};
                 }
             }

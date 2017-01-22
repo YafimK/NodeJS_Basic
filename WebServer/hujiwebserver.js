@@ -11,9 +11,10 @@ let STATUS_CODES = require('./httpStandard').STATUS_CODES;
 
 function socketHandler(socket) {
     socket.setKeepAlive(false);
+    //TODO change
     socket.setTimeout(25000, function ()
     {
-        console.log("connection timed out!" + socket.host + ":" + socket.port);
+        //console.log("connection timed out!" + socket.host + ":" + socket.port);
         socket.end();
     });
 
@@ -34,16 +35,16 @@ function socketHandler(socket) {
     }
 
     socket.on('end', function () {
-        console.log('closing socket ' + socket.remotePort);
+        //console.log('closing socket ' + socket.remotePort);
     });
 
-    console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
+    //console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
     let requestData = "";
 
     socket.on('data', function (data, err) {
 
-        console.log('received DATA ' + socket.remotePort);
+        //console.log('received DATA ' + socket.remotePort);
         requestData += data;
         if (err) {
             throw err;
@@ -62,9 +63,9 @@ function socketHandler(socket) {
 
     socket.on('close', function (had_error) {
         if (had_error === true) {
-            console.error("connection closed with error");
+            //console.error("connection closed with error");
         }
-        console.log('CLOSED:' + socket.remotePort);
+        //console.log('CLOSED:' + socket.remotePort);
     });
 
 }
@@ -75,9 +76,9 @@ function ServerObj(port) {
 
     server.listen(this.port);//.setTimeout(25000);
      ServerObj.prototype.stop = function() {
-         console.log('Server closing server...');
+         //console.log('Server closing server...');
          server.close();
-         console.log('Server closed.')
+         //console.log('Server closed.')
     }
 }
 
@@ -90,7 +91,7 @@ function start(port, callback) {
     this.callback = callback || defCallback;
     this.port = port;
     try {
-        console.log("starting server with port: " + this.port);
+        //console.log("starting server with port: " + this.port);
         let server = new ServerObj(this.port);
         this.callback();
         return server

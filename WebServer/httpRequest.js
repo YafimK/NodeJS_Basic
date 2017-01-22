@@ -80,8 +80,8 @@ var httpRequest = {
         this.reqHeaders = headerList;
         this.path = this.reqUrl.pathname;
         this.protocol = this.type;
+        this.host = this.reqHeaders["host"].split(':')[0];
         this.query = this.parseQuery(this.reqUrl.query);
-        this.host = this.reqHeaders["host"];
         //this.cookies = this.reqHeaders["cookie"]
     },
     /**
