@@ -188,15 +188,15 @@ httpResponse.prototype.checkContentType = function (content) {
         content = '';
         this.setContentType('text/html');
     } else if(typeof content === 'string'){
-        let dataT = parser.parseDataSeqmant(content);
-        if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
+        // let dataT = parser.parseDataSeqmant(content);
+        // if(/<!DOCTYPE html>/g.test(dataT[0]) || /(<html\s+.*)/g.test(dataT[0])){
             this.setContentType('text/html');
-        } else{
-            this.setContentType('text/plain');
-        }
+        // } else{
+        //     this.setContentType('text/plain');
+        // }
     }
     else if(typeof content === 'object'){
-        return this.JSON.parse(content)
+        this.setContentType('application/json');
     }
     else{
         throw TypeError("Doesn't recognize type")
@@ -212,8 +212,12 @@ httpResponse.prototype.writeResponse = function(content){
     if(!content || content === null) {
         content = '';
     }
-    let chunk = content;
     this.checkContentType(content);
+    if(typeof content === 'object'){
+        content = JSON.stringify(content);
+    }
+
+    let chunk = content;
 
     if (204 === this.statusCode || 304 === this.statusCode) {
         this.removeHeader('content-type');
