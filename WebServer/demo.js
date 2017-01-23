@@ -1,5 +1,5 @@
 var myHTTPserver = require('./hujiwebserver');
-var constants = require('./httpConstants');
+var constants = require('./httpStandard');
 var fs = require('fs');
 
 var server = myHTTPserver
