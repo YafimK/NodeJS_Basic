@@ -79,7 +79,6 @@ var httpRequest = {
         });
         this.reqHeaders = headerList;
         this.path = this.reqUrl.pathname;
-        this.protocol = this.type;
         this.host = this.reqHeaders["host"].split(':')[0];
         this.query = this.parseQuery(this.reqUrl.query);
         //this.cookies = this.reqHeaders["cookie"]
@@ -112,6 +111,11 @@ var httpRequest = {
         this.setHttpMethod(requestType[0]);
         this.setHttpUrl(requestType[1]);
         this.setHttpType(requestType[2]);
+        this.protocol = this.type.trim().toLocaleLowerCase();
+        let protocolLineArr = this.protocol.split('/');
+        if(protocolLineArr){
+            this.protocol = protocolLineArr[0].toLocaleLowerCase();
+        }
     },
     setHttpUrl(reqUrl){
         this.reqUrl = url.parse(reqUrl)
