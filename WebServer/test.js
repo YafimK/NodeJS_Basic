@@ -13,8 +13,13 @@
 
 const fs = require('fs');
 let STATUS_CODES = require('./httpStandard').STATUS_CODES;
-var httpServer = require('./hujiwebserver');
+let httpServer = require('./hujiwebserver');
+let pathLib = require("path");
 
+let server = httpServer.start(8080, function(err){
+    if(err !== undefined){
+        console.log(err);
+    }});
 
 // USE RUNS
 httpServer
@@ -30,23 +35,25 @@ httpServer
         })
     .use('/filez/*',
         function(rq,rs,n) {
-            const filename = rq.path.substr(1);
+            let requestedFilePath = rq.path;
 
-            if (filename.endsWith('.js')) {
+            if (requestedFilePath.endsWith('.js')) {
                 rs.set('content-type','application/javascript');
 
-            } else if (filename.endsWith('.html')) {
+            } else if (requestedFilePath.endsWith('.html')) {
                 rs.set('content-type','text/html');
 
-            } else if (filename.endsWith('.css')) {
+            } else if (requestedFilePath.endsWith('.css')) {
                 rs.set('content-type','text/css');
-
             } else {
                 rs.status(500).send(STATUS_CODES[500]);
                 return;
             }
 
-            fs.readFile(filename, function (err, data) {
+            requestedFilePath = __dirname + requestedFilePath;
+            requestedFilePath = pathLib.normalize(requestedFilePath);
+            // console.log(requestedFilePath);
+            fs.readFile(requestedFilePath, function (err, data) {
                 if (err) {
                     rs.status(500).send(STATUS_CODES[500]);
                     return;
@@ -55,33 +62,7 @@ httpServer
                 rs.set('content-length', data.toString());
                 rs.send(data.toString());
             });
-        });
-
-var server = httpServer.start(8080, function(err){
-    if(err !== undefined){
-        console.log(err);
-    }});
-
-var http = require('http');
-setTimeout(function() {
-    http.request(
-        {host: 'localhost', port: 8080,  path: '/hello/world'},
-        function(response) {
-            response.on('data', function(data) {console.log(data.toString());})
-        }).end();
-
-    http.request(
-        {host: 'localhost', port: 8080,  path: '/add/7/6'},
-        function(response) {
-            response.on('data', function(data) {console.log(data.toString());})
-        }).end();
-
-
-    http.request(
-        {host: 'localhost', port: 8080,  path: '/filez/simple.js'},
-        function(response) {
-            response.on('data', function(data) {console.log(data.toString());})
-        }).end();
-
-    setTimeout(server.stop, 1000);
-}, 1000);
+        })
+    .use('a/b/', function (rq, rs, n) {
+            console.log(rq.path);
+    });
