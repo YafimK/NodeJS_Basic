@@ -13,27 +13,41 @@ function userChoice(event) {
         .done(function(response) {
             $('div.votingButtons').detach();
             $('div#gameView').append($.fn.announceResult(event.data.numStr, response));
-        console.log( "success: " + JSON.stringify(response));
+        // console.log( "success: " + JSON.stringify(response));
     })
     .fail(function() {
-        console.trace( "we have an issue in passing the gambling with: " );
+        // console.trace( "we have an issue in passing the gambling with: " );
     })
     .always(function() {
-        console.log( "complete" );
+        // console.log( "complete" );
     });
 }
 
 function resetGame(){
+    $(".votingButtons").detach();
+
+    addBackButton();
+
     $.ajax({url: "/gamble/reset", method: 'DELETE'})
         .done(function(response) {
-            console.log( "success in resetting the game" );
+            // console.log( "success in resetting the game" );
     })
     .fail(function() {
-        console.warn( "error in resting the game" );
+        // console.warn( "error in resting the game" );
     })
     .always(function() {
-        console.warn( "completed reset request" );
+        // console.warn( "completed reset request" );
     });
+}
+
+function addBackButton() {
+    if($('#resetView').length === 0){
+        $("<div id='resetView'></div>").appendTo("#gameView");
+        $("<span></span>").appendTo("#resetView").append("<input id=\"backButton\" type=\"button\" value=\"Go back to the game!\">");
+        $("#backButton").click(function () {
+            location.reload();
+        });
+    }
 }
 
 (function( $ ){
@@ -42,10 +56,8 @@ function resetGame(){
         $("<input id=\"user1choice\" type=\"button\" value=\"1\">").appendTo(".votingButtons");
         $("<input id=\"user0choice\" type=\"button\" value=\"0\">").appendTo(".votingButtons");
         $("<br>").appendTo(".votingButtons");
-        $("<input id=\"newGame\" type=\"button\" value=\"New game\">").appendTo(".votingButtons");
         $("#user1choice").click({userNum: 1, numStr: 'ones'}, userChoice);
         $("#user0choice").click({userNum: 0, numStr: 'zeros'}, userChoice);
-        $("#newGame").click(resetGame);
         return this;
     };
 })( jQuery );
@@ -58,9 +70,9 @@ function resetGame(){
            choiceResult = "tie";
        } else if((result.ones > result.zeros && chosenNumber === "ones" )
             || (result.ones < result.zeros && chosenNumber === "zeros" )){
-            choiceResult = "win";
+            choiceResult = "lose";
         } else {
-           choiceResult = "lose";
+           choiceResult = "win";
        }
 
        let annoucment = '';
@@ -76,7 +88,7 @@ function resetGame(){
                 annoucment = "Ladies and gentleman, we've got a tie!!!"
                 break;
             default:
-                console.warn("something went wrong in calculating results!")
+                // console.warn("something went wrong in calculating results!")
             break;
         }
 
@@ -89,19 +101,14 @@ function resetGame(){
         $("<tbody></tbody>").appendTo(".resultsTable");
         $("<tr class='vote0Row'></tr>").appendTo("tbody").append("<td>zeros</td><td>" + result.zeros + "</td>");
         $("<tr class='vote1Row'></tr>").appendTo("tbody").append("<td>ones</td><td>" + result.ones + "</td>");
-        $("<input id=\"newGame\" type=\"button\" value=\"New game\">").appendTo(".annoucment");
-        $("#newGame").click(resetGame);
-        $("<span></span>").appendTo(".annoucment").append("<input id=\"backButton\" type=\"button\" value=\"Go back to the game!\">");
-        $("#backButton").click(function()
-        {
-            $(".annoucment").detach();
-            $('div#gameView').append($.fn.showGameVote());
-        });
+        addBackButton();
         return this;
     };
 })( jQuery );
 
 $(document).ready(function(){
     $('div#gameView').append($.fn.showGameVote());
+    $("<input id=\"newGame\" type=\"button\" value=\"New game\">").appendTo("#control");
+    $("#newGame").click(resetGame);
 
 });

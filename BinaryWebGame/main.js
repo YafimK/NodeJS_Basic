@@ -4,7 +4,10 @@
 $ = require('jquery');
 let fileReader = require('./www/fileReader');
 let server = require('./../WebServer/hujiwebserver');
-server.start(8081);
+server.start(8081, function(err){
+    if(err !== undefined){
+        console.log(err);
+    }});
 
 //Store the last score
 let gambling = {
