@@ -69,7 +69,7 @@ function serveHttpFiles(req, res, next){
         requestedFilePath = req.path;
     }
 
-    var ext = requestedFilePath.slice(req.path.indexOf('.') + 1);
+    var ext = requestedFilePath.slice(requestedFilePath.indexOf('.') + 1);
     if(ext === 'css'){
         res.set('content-type', 'text/css');
     } else if(ext === 'js') {
@@ -89,7 +89,7 @@ function serveHttpFiles(req, res, next){
         }
 
         res.set('content-length', data.toString());
-        res.send(data.toString());
+        res.status(200).send(data.toString());
     });
 
 
