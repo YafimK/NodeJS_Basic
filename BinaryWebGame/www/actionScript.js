@@ -2,12 +2,12 @@
  * created by fimak on 18/01/2017.
  */
 
-let gambleDict = {
+var gambleDict = {
     1: "ones", 0: "zeroes"
 };
 
 function userChoice(event) {
-    let url = "/gamble/" + event.data.userNum;
+    var url = "/gamble/" + event.data.userNum;
 
     $.ajax({url: url, method: 'POST'})
         .done(function(response) {
@@ -64,7 +64,7 @@ function addBackButton() {
 
 (function( $ ){
     $.fn.announceResult = function(chosenNumber, result) {
-       let choiceResult;
+       var choiceResult;
 
        if( result.ones === result.zeros ){
            choiceResult = "tie";
@@ -75,7 +75,7 @@ function addBackButton() {
            choiceResult = "win";
        }
 
-       let annoucment = '';
+       var annoucment = '';
         switch(choiceResult)
         {
             case "win":

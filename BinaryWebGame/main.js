@@ -2,15 +2,19 @@
  * Created by fimka on 17/01/2017.
  */
 $ = require('jquery');
-let fileReader = require('./www/fileReader');
-let server = require('./../WebServer/hujiwebserver');
+var pathLib = require("path");
+var server = require('./../WebServer/hujiwebserver');
+var STATUS_CODES = require('./../WebServer/httpStandard').STATUS_CODES;
+
+var fs = require("fs");
+
 server.start(8081, function(err){
-    if(err !== undefined){
+    if(err != undefined){
         console.log(err);
     }});
 
 //Store the last score
-let gambling = {
+var gambling = {
   ones: 0,
     zeros: 0
 };
@@ -35,11 +39,11 @@ server.use('/gamble/reset', resetGame);
  * @param next
  */
 function buttonClickResult(req, res, next){
-    let gamblingDict = {1: 'ones', 0: 'zeros'};
+    var gamblingDict = {1: 'ones', 0: 'zeros'};
     if(!gamblingDict.hasOwnProperty(req.params.chosenNumber)){
         next();
     }
-    let currentChoice = gamblingDict[req.params.chosenNumber];
+    var currentChoice = gamblingDict[req.params.chosenNumber];
     if(currentChoice)
     {
         gambling[currentChoice] += 1;
@@ -57,23 +61,38 @@ server.use('/gamble/:chosenNumber', buttonClickResult);
  * @param next
  */
 function serveHttpFiles(req, res, next){
-    let fileHandler = Object.create(fileReader.fileReader);
-    fileHandler.setDebugState(true);
-    if(req.path === "/"){
-        req.path = "/binary.html";
-    }
-    let ext = req.path.slice(req.path.indexOf('.') + 1);
-    if(ext === 'css'){
-        res.setContentType('text/css');
-    } else if(ext === 'js') {
-        res.setContentType("text/javascript");
+    var requestedFilePath = "";
 
-    } else if (ext === "html") {
-        res.setContentType("text/html");
+    if(req.path === "/"){
+        requestedFilePath = "/binary.html";
+    } else {
+        requestedFilePath = req.path;
     }
-    let htmlFile = fileHandler.readFile('./www' + req.path) || "";
-    let buffer = htmlFile.toString();
-    res.status(200).send(buffer);
+
+    var ext = requestedFilePath.slice(req.path.indexOf('.') + 1);
+    if(ext === 'css'){
+        res.set('content-type', 'text/css');
+    } else if(ext === 'js') {
+        res.set('content-type', 'application/javascript');
+    } else if (ext === "html") {
+        res.set('content-type', 'text/html');
+    }
+
+    requestedFilePath = '/www' + requestedFilePath;
+    requestedFilePath = __dirname + requestedFilePath;
+    requestedFilePath = pathLib.normalize(requestedFilePath);
+
+    fs.readFile(requestedFilePath, function (err, data) {
+        if (err) {
+            res.status(500).send(STATUS_CODES[500]);
+            return;
+        }
+
+        res.set('content-length', data.toString());
+        res.send(data.toString());
+    });
+
+
 }
 
 server.use(serveHttpFiles);
