@@ -12,39 +12,53 @@
  */
 
 const fs = require('fs');
-let STATUS_CODES = require('./httpStandard').STATUS_CODES;
-let httpServer = require('./hujiwebserver');
-let pathLib = require("path");
+var STATUS_CODES = require('./httpStandard').STATUS_CODES;
+var httpServer = require('./hujiwebserver');
+var pathLib = require("path");
 
-let server = httpServer.start(8080, function(err){
-    if(err !== undefined){
+//endsWith polyfill for es5
+if (!String.prototype.endsWith) {
+    String.prototype.endsWith = function (searchString, position) {
+        var subjectString = this.toString();
+        if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+            position = subjectString.length;
+        }
+        position -= searchString.length;
+        var lastIndex = subjectString.lastIndexOf(searchString, position);
+        return lastIndex !== -1 && lastIndex === position;
+    };
+}
+
+var server = httpServer.start(8080, function (err) {
+    if (err !== undefined) {
         console.log(err);
-    }});
+    }
+});
 
 // USE RUNS
 httpServer
     .use('/hello/world',
-        function(rq,rs,n) {
-            rs.set('content-type','text/plain');
+        function (rq, rs, n) {
+            rs.set('content-type', 'text/plain');
             rs.send('hello world');
         })
     .use('/add/:n/:m',
-        function(rq,rs,n) {
-            rs.set('content-type','application/json');
+        function (rq, rs, n) {
+            rs.set('content-type', 'application/json');
             rs.json({result: rq.params.n * rq.params.m});
         })
     .use('/filez/*',
-        function(rq,rs,n) {
-            let requestedFilePath = rq.path;
+        function (rq, rs, n) {
+            var requestedFilePath = rq.path;
 
             if (requestedFilePath.endsWith('.js')) {
-                rs.set('content-type','application/javascript');
+                rs.set('content-type', 'application/javascript');
 
             } else if (requestedFilePath.endsWith('.html')) {
-                rs.set('content-type','text/html');
+                rs.set('content-type', 'text/html');
 
             } else if (requestedFilePath.endsWith('.css')) {
-                rs.set('content-type','text/css');
+                rs.set('content-type', 'text/css');
             } else {
                 rs.status(500).send(STATUS_CODES[500]);
                 return;
@@ -62,7 +76,6 @@ httpServer
                 rs.set('content-length', data.toString());
                 rs.send(data.toString());
             });
-        })
-    .use('a/b/', function (rq, rs, n) {
-            console.log(rq.path);
-    });
+        });
+
+

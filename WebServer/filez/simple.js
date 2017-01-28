@@ -2,11 +2,11 @@
  * Created by fimka on 14/01/2017.
  */
 
-let url = require("url");
-let MIME_TYPES = require('./../httpStandard').MIME_TYPES;
-let CR = '\r';
-let LF = '\n';
-let CRLF = '\r\n';
+var url = require("url");
+var MIME_TYPES = require('./../httpStandard').MIME_TYPES;
+var CR = '\r';
+var LF = '\n';
+var CRLF = '\r\n';
 
 var httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE'];
 var httpRequest = {
@@ -23,19 +23,19 @@ var httpRequest = {
 
 
     setRequestParams(params) {
-        let reqLine = params[0];
+        var reqLine = params[0];
         this.setBaseParams(reqLine);
-        let headers = params.slice(1);
-        let headerRegEx = /(\b[^:]+):\s+([^']+)/g;
-        let headerList = {};
-        let _this = this;
+        var headers = params.slice(1);
+        var headerRegEx = /(\b[^:]+):\s+([^']+)/g;
+        var headerList = {};
+        var _this = this;
         var matchPram = false
         headers.forEach(function(row)
         {
             row.trim().replace(headerRegEx, function ($0, param, value) {
                 param = param.toString().toLowerCase();
                 if(param === "cookie"){
-                    let cookieStore = value.split(';');
+                    var cookieStore = value.split(';');
                     cookieStore.forEach(function(cookie){
                         cookie.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, cookieHeader, cookieField) {
                             _this.cookies[cookieHeader] = cookieField;
@@ -86,12 +86,12 @@ var httpRequest = {
         //this.cookies = this.reqHeaders["cookie"]
     },
     parseQuery(queryString){
-        let returnQuery = {}
+        var returnQuery = {}
         if(!queryString){
             return returnQuery
         }
 
-        let queryStore = queryString.split(';');
+        var queryStore = queryString.split(';');
         queryStore.forEach(function(query){
             query.replace(/(\w+)\s*=\s*([^']+)/g, function ($0, queryHeader, queryField) {
                 returnQuery[queryHeader] = queryField.replace("+"," ");
@@ -100,7 +100,7 @@ var httpRequest = {
 
     },
     setBaseParams(request){
-        let requestType = request.trim().split(/\s+/g);
+        var requestType = request.trim().split(/\s+/g);
         this.setHttpMethod(requestType[0]);
         this.setHttpUrl(requestType[1]);
         this.setHttpType(requestType[2]);

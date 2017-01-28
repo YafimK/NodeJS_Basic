@@ -1,17 +1,16 @@
 /**
  * Created by fimka on 06/01/2017.
  */
-let net = require("net");
-let url = require("url");
-let parser = require("./httpParser");
-let router = require("./router").router;
-let httpResponse = require("./httpResponse");
-let STATUS_CODES = require('./httpStandard').STATUS_CODES;
+var net = require("net");
+var url = require("url");
+var parser = require("./httpParser");
+var router = require("./router").router;
+var httpResponse = require("./httpResponse");
+var STATUS_CODES = require('./httpStandard').STATUS_CODES;
 
 
 function socketHandler(socket) {
     socket.setKeepAlive(false);
-    //TODO change
     socket.setTimeout(25000, function ()
     {
         //console.log("connection timed out!" + socket.host + ":" + socket.port);
@@ -25,9 +24,9 @@ function socketHandler(socket) {
 
     function treatRequest() {
         if (requestData != "") {
-            let dataT = parser.parseDataSeqmant(requestData); //split buffer to parts - catch the type
+            var dataT = parser.parseDataSeqmant(requestData); //split buffer to parts - catch the type
             if (parser.isHttpRequest(dataT[0])) {
-                let httpReq = parser.httpParser(dataT);
+                var httpReq = parser.httpParser(dataT);
                 router.httpHandler(httpReq, socket);
             }
             requestData = "";
@@ -40,7 +39,7 @@ function socketHandler(socket) {
 
     //console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
-    let requestData = "";
+    var requestData = "";
 
     socket.on('data', function (data, err) {
 
@@ -63,7 +62,7 @@ function socketHandler(socket) {
 
     socket.on('close', function (had_error) {
         if (had_error === true) {
-            //console.error("connection closed with error");
+            console.error("connection closed with error");
         }
         //console.log('CLOSED:' + socket.remotePort);
     });
@@ -72,7 +71,7 @@ function socketHandler(socket) {
 
 function ServerObj(port) {
     this.port = port || 8080;
-    let server = net.createServer(socketHandler);
+    var server = net.createServer(socketHandler);
 
     server.listen(this.port);//.setTimeout(25000);
      ServerObj.prototype.stop = function() {
@@ -83,7 +82,10 @@ function ServerObj(port) {
 }
 
 function defCallback(err) {
-    console.error(err)
+    if(err != '')
+    {
+        console.error(err);
+    }
 }
 
 
@@ -92,7 +94,7 @@ function start(port, callback) {
     this.port = port;
     try {
         //console.log("starting server with port: " + this.port);
-        let server = new ServerObj(this.port);
+        var server = new ServerObj(this.port);
         this.callback();
         return server
     } catch (err) {

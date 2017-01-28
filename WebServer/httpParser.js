@@ -3,11 +3,11 @@
  */
 
 //This will be our factory for creating request, response objects.
-let url = require("url");
-let httpRequest = require('./httpRequest');
+var url = require("url");
+var httpRequest = require('./httpRequest');
 
 function httpParser(data){
-    let req = Object.create(httpRequest);
+    var req = new httpRequest();
     req.method = data[0].trim().split(/\s+/g)[0];
     req.setRequestParams(data);
     //TODO uncomment
@@ -22,8 +22,8 @@ function sliceDataSegment(data)
 
 function isHttpRequest(str)
 {
-    let requestType = str.trim().split(/\s+/g);
-    let httpCheck = /(HTTP)/g;
+    var requestType = str.trim().split(/\s+/g);
+    var httpCheck = /(HTTP)/g;
     if(requestType[2].match(httpCheck).length > 0)
     {
         return true;

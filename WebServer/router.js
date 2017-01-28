@@ -3,10 +3,11 @@
  */
 
 "use strict";
-let STATUS_CODES = require('./httpStandard').STATUS_CODES;
-let httpResponse = require('./httpResponse');
 
-let router = function() {
+var STATUS_CODES = require('./httpStandard').STATUS_CODES;
+var httpResponse = require('./httpResponse');
+
+var router = function() {
 };
 
 router.prototype.controllerSet =  [];
@@ -18,14 +19,14 @@ router.prototype.controllerSet =  [];
 router.prototype.addRoute = function(path, middleWare)
 {
     this.path = path || "/";
-    let commandParams = {};
+    var commandParams = {};
     path.split('/').forEach(function (elem, i) {
 
         if (elem.startsWith(':')) {
             commandParams[elem.substr(1)] = i;
         }
     });
-    let command_input ={
+    var command_input ={
         path: this.path,
         command_params: commandParams
     };
@@ -43,41 +44,41 @@ router.prototype.addRoute = function(path, middleWare)
  */
 
 router.prototype.makeRouteHandleIterator = function(originalArr, path, req, response, socket) {
-    let nextIndex = 0;
-    let currentArray;
+    var nextIndex = 0;
+    var currentArray;
 
-    let next = function () {
+    var next = function () {
         currentArray = originalArr.slice(nextIndex);
         if (nextIndex < originalArr.length) {
-            for (let idx in currentArray) {
+            for (var idx in currentArray) {
                 if (checkMatch(currentArray[idx].commandObj.path, path)) {
                     nextIndex += parseInt(idx) + 1;
-                    let urlParams = req.path.split('/');
+                    var urlParams = req.path.split('/');
 
                     if (currentArray[idx].commandObj.command_params !== {}) {
                         req.params = {}
                     }
 
-                    for (let param in currentArray[idx].commandObj.command_params) {
+                    for (var param in currentArray[idx].commandObj.command_params) {
                         if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
                             req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
                         }
                     }
 
-                    // const timeout = setTimeout(function () {
-                    //     if (socket.readyState !== 3) {
-                    //         console.log('Middleware times out.');
-                    //         return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
-                    //     }
-                    // }, 10000);
+                    const timeout = setTimeout(function () {
+                        if (socket.readyState !== 3) {
+                            console.log('Middleware times out.');
+                            return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                        }
+                    }, 10000);
 
                     currentArray[idx].middleWare(req, response, next);
-                    // clearTimeout(timeout);
+                    clearTimeout(timeout);
                     return {done: true};
                 }
             }
         }
-        let errorRes = (new httpResponse(socket, req.type));
+        var errorRes = (new httpResponse(socket, req.type));
         errorRes.status(404).send(STATUS_CODES[404]);
         return {done: true};
     };
@@ -92,11 +93,11 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
  */
 
 function checkMatch(curPath, reqCheckPath) {
-    let matchRegex = "^";
-    let matchRegexObject;
+    var matchRegex = "^";
+    var matchRegexObject;
 
-    let splitPath = curPath.split('\/');
-    for (let i = 0; i < splitPath.length; i++) {
+    var splitPath = curPath.split('\/');
+    for (var i = 0; i < splitPath.length; i++) {
         if (splitPath[i] !== "") {
             matchRegex += "\/";
             if ((splitPath[i].match(/:/g))) {
@@ -120,7 +121,7 @@ function checkMatch(curPath, reqCheckPath) {
  */
 
  router.prototype.httpHandler = function(req, socket) {
-     let response = new httpResponse(socket, req.type);
+     var response = new httpResponse(socket, req.type);
      this.makeRouteHandleIterator(this.controllerSet, req.path, req, response, socket);
 };
 
