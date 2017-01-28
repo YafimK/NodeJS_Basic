@@ -212,7 +212,9 @@ httpResponse.prototype.writeResponse = function (content) {
     if (!content || content === null) {
         content = '';
     }
+    
     this.checkContentType(content);
+
     if (typeof content === 'object') {
         content = JSON.stringify(content);
     }
@@ -225,8 +227,6 @@ httpResponse.prototype.writeResponse = function (content) {
     }
 
     this.setContentLength(content);
-
-    // var test = this.getStatusLine() + this.getHeadersBody() + this.getCookieHeader() + '\r\n' + chunk;
 
     this.socket.write(this.getStatusLine());
     this.socket.write(this.getHeadersBody());
