@@ -87,7 +87,7 @@ httpRequest.prototype.setRequestParams = function (params) {
 
 /**
  * Parse query to field and values.
- * @returns {} query object
+ * @returns query object
  * @param queryString
  */
 httpRequest.prototype.parseQuery = function (queryString) {

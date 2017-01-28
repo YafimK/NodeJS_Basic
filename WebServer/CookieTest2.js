@@ -129,7 +129,7 @@ hujiwebserver.use('/response/test/send/:id', function (req, res, next) {
 
     switch (req.params.id) {
         case '1':
-            res.send(new Buffer('whoop'))
+            res.send(new Buffer('whoop'));;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
             break;
         case '2':
             res.json({some: 'json'});
@@ -171,17 +171,17 @@ hujiwebserver.use('/response/test/json/:id', function (req, res, next) {
 
 
 hujiwebserver.use('/response/test/next', function (req, res, next) {
-    res.body = 'next1;'
+    res.body = 'next1;';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     next();
 });
 
 hujiwebserver.use('/response/test/next', function (req, res, next) {
-    res.body += 'next2;'
+    res.body += 'next2;';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     next();
 });
 
 hujiwebserver.use('/response/test/next', function (req, res, next) {
-    res.body += 'next3;'
+    res.body += 'next3;';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     res.status(200).send(res.body);
 });
 

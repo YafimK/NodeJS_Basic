@@ -72,13 +72,15 @@ function socketHandler(socket) {
 function ServerObj(port) {
     this.port = port || 8080;
     var server = net.createServer(socketHandler);
-
-    server.listen(this.port);//.setTimeout(25000);
-     ServerObj.prototype.stop = function() {
-         //console.log('Server closing server...');
-         server.close();
-         //console.log('Server closed.')
+    try {
+        server.listen(this.port);
+        ServerObj.prototype.stop = function () {
+            server.close();
+        }
+    } catch (err){
+        throw "Error during opening port for server listen: " + err;
     }
+
 }
 
 function defCallback(err) {

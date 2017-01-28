@@ -7,6 +7,17 @@
 var STATUS_CODES = require('./httpStandard').STATUS_CODES;
 var httpResponse = require('./httpResponse');
 
+/**
+ * Polyfill for startsWith
+ */
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position){
+        position = position || 0;
+        return this.substr(position, searchString.length) === searchString;
+    };
+}
+
+
 var router = function() {
 };
 
@@ -51,30 +62,32 @@ router.prototype.makeRouteHandleIterator = function(originalArr, path, req, resp
         currentArray = originalArr.slice(nextIndex);
         if (nextIndex < originalArr.length) {
             for (var idx in currentArray) {
-                if (checkMatch(currentArray[idx].commandObj.path, path)) {
-                    nextIndex += parseInt(idx) + 1;
-                    var urlParams = req.path.split('/');
+                if(currentArray.hasOwnProperty(idx)) {
+                    if (checkMatch(currentArray[idx].commandObj.path, path)) {
+                        nextIndex += parseInt(idx) + 1;
+                        var urlParams = req.path.split('/');
 
-                    if (currentArray[idx].commandObj.command_params !== {}) {
-                        req.params = {}
-                    }
-
-                    for (var param in currentArray[idx].commandObj.command_params) {
-                        if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
-                            req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
+                        if (currentArray[idx].commandObj.command_params !== {}) {
+                            req.params = {}
                         }
-                    }
 
-                    const timeout = setTimeout(function () {
-                        if (socket.readyState !== 3) {
-                            console.log('Middleware times out.');
-                            return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                        for (var param in currentArray[idx].commandObj.command_params) {
+                            if (currentArray[idx].commandObj.command_params.hasOwnProperty(param)) {
+                                req.params[param] = urlParams[currentArray[idx].commandObj.command_params[param]]
+                            }
                         }
-                    }, 10000);
 
-                    currentArray[idx].middleWare(req, response, next);
-                    clearTimeout(timeout);
-                    return {done: true};
+                        const timeout = setTimeout(function () {
+                            if (socket.readyState !== 3) {
+                                console.log('Middleware times out.');
+                                return (new httpResponse(socket, req.type)).status(404).send(STATUS_CODES[404])
+                            }
+                        }, 10000);
+
+                        currentArray[idx].middleWare(req, response, next);
+                        clearTimeout(timeout);
+                        return {done: true};
+                    }
                 }
             }
         }

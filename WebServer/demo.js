@@ -24,13 +24,13 @@ var server = myHTTPserver
 			rs.set('content-type','text/css');
 
 		} else {
-            rs.status(500).send(constants.StatusCodes[500]);
+            rs.status(500).send(constants.STATUS_CODES[500]);
 			return;
 		}
 
 		fs.readFile(filename, function (err, data) {
 			if (err) {
-                rs.status(500).send(constants.StatusCodes[500]);
+                rs.status(500).send(constants.STATUS_CODES[500]);
 				return;
 			}
 

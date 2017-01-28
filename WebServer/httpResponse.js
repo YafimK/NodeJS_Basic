@@ -2,8 +2,6 @@
  * Created by fimka on 14/01/2017.
  */
 var STATUS_CODES = require('./httpStandard').STATUS_CODES;
-var parser = require("./httpParser");
-
 
 // set(), status(), get() , cookie(), send() and json() .
 var httpResponse = function (socket, httpType) {
@@ -50,7 +48,9 @@ httpResponse.prototype.set = function (field, value) {
     }
     else if (field) {
         for (var headerName in field) {
-            this.headers[headerName] = field[headerName].toString();
+            if (field.hasOwnProperty(headerName)) {
+                this.headers[headerName] = field[headerName].toString();
+            }
         }
     }
     else {
@@ -132,12 +132,14 @@ httpResponse.prototype.getCookieHeader = function () {
         cookieHeader = 'set-cookie: '
     }
 
-    for(var key in this.cookies){
+    for (var key in this.cookies) {
         if (this.cookies.hasOwnProperty(key)) {
             var value = this.cookies[key];
             cookieHeader += key + '=' + value.value;
             for (var option in value.options) {
-                cookieHeader += ';' + value.options[option];
+                if (value.options.hasOwnProperty(option)) {
+                    cookieHeader += ';' + value.options[option];
+                }
             }
             cookieHeader += '\r\n';
         }
@@ -151,7 +153,7 @@ httpResponse.prototype.getCookieHeader = function () {
  */
 httpResponse.prototype.getHeadersBody = function () {
     var headerBody = '';
-    for(var key in this.headers){
+    for (var key in this.headers) {
         if (this.headers.hasOwnProperty(key)) {
             var value = this.headers[key];
             headerBody += (key + ': ' + value + '\r\n')
@@ -215,25 +217,22 @@ httpResponse.prototype.writeResponse = function (content) {
         content = JSON.stringify(content);
     }
 
-    var chunk = content;
-
     if (204 === this.statusCode || 304 === this.statusCode) {
         this.removeHeader('content-type');
         this.removeHeader("content-length");
         this.removeHeader('transfer-encoding');
-        chunk = '';
+        content = '';
     }
 
     this.setContentLength(content);
 
-    var test = this.getStatusLine() + this.getHeadersBody() + this.getCookieHeader() + '\r\n' + chunk;
+    // var test = this.getStatusLine() + this.getHeadersBody() + this.getCookieHeader() + '\r\n' + chunk;
 
     this.socket.write(this.getStatusLine());
     this.socket.write(this.getHeadersBody());
     this.socket.write(this.getCookieHeader());
     this.socket.write('\r\n');
-    this.socket.write(chunk);//Content-Type'));
-    // this.socket.write('\r\n');
+    this.socket.write(content);
     this.socket.end();
     return this;
 };
