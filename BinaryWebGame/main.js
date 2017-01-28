@@ -1,7 +1,6 @@
 /**
  * Created by fimka on 17/01/2017.
  */
-$ = require('jquery');
 var pathLib = require("path");
 var server = require('./../WebServer/hujiwebserver');
 var STATUS_CODES = require('./../WebServer/httpStandard').STATUS_CODES;
