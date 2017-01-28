@@ -39,6 +39,7 @@ server.use('/gamble/reset', resetGame);
  * @param next
  */
 function buttonClickResult(req, res, next){
+    res.status(200).json(gambling);
     var gamblingDict = {1: 'ones', 0: 'zeros'};
     if(!gamblingDict.hasOwnProperty(req.params.chosenNumber)){
         next();
@@ -48,7 +49,6 @@ function buttonClickResult(req, res, next){
     {
         gambling[currentChoice] += 1;
     }
-    res.status(200).json(gambling)
 }
 server.use('/gamble/:chosenNumber', buttonClickResult);
 
