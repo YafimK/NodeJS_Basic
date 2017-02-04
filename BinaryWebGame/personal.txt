@@ -2,6 +2,11 @@
 
 
 **EASY**
+well mostly this exercise wasn't that hard at all - espcially since i've learned JQuery for ex2.
 
 
 **General course comments**
+The course was overly good - but i think we should get most exercies before and maybe switch ex 2 and 3...
+switch it to four ex's.
+Maybe instead of exam - make the course like PostPc course (android) with project at it's end, like building some kind of web app or something else to make this knowledge to use.
+For students, it will be a great thign to invest in - anothor work for the GitHub profile :)

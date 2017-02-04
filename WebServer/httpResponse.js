@@ -49,7 +49,7 @@ httpResponse.prototype.set = function (field, value) {
     else if (field) {
         for (var headerName in field) {
             if (field.hasOwnProperty(headerName)) {
-                this.headers[headerName] = field[headerName].toString();
+                this.headers[headerName.toLowerCase()] = field[headerName].toString();
             }
         }
     }
