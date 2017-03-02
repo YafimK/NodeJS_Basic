@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {render} from 'react-dom';
 
 class Login extends React.Component {
     render(){
@@ -9,5 +8,5 @@ class Login extends React.Component {
 
 }
 
-render(<Login/>, document.getElementById('login'));
+ReactDOM.render(<Login/>, document.getElementById('login'));
 

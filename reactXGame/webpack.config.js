@@ -3,12 +3,17 @@ var path = require('path');
 
 var BUILD_DIR = path.resolve(__dirname, 'public');
 var APP_DIR = path.resolve(__dirname, 'app');
-var entryPoint = path.normalize(APP_DIR + '\\main.js');
+var login = path.normalize(APP_DIR + '\\login.jsx');
+var game = path.normalize(APP_DIR + '\\game.jsx');
+
 var config = {
-    entry: entryPoint,
+    entry: {
+        login,
+        game
+    },
     output: {
         path: BUILD_DIR,
-        filename: 'bundle.js'
+        filename: '[name].js'
     },
     module : {
         loaders : [
