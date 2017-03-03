@@ -28,6 +28,7 @@ export default class GameView extends React.Component{
                 this.setState({ gameStage: 'Results', results: this.response});
             }
         };
+        xhr.send();
 
     }
     onResetGameClick(event){
