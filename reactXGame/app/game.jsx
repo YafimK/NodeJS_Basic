@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import VoteMenu from './voteMenu.jsx';
+import GameView from './GameView.jsx';
 
-ReactDOM.render(<VoteMenu/>, document.getElementById('game'));
-ReactDOM.render(,document.getElementById("menu"));
+
+ReactDOM.render(<GameView/>, document.getElementById('game'));

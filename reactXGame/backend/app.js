@@ -10,6 +10,47 @@ var fs = require("fs");
 
 var userDatabase = new Map(); //super safe user database
 
+//Store the last score
+var gambling = {
+    ones: 0,
+    zeros: 0
+};
+
+/**
+ * Button “new game” that resets the game
+ * @param req
+ * @param res
+ * @param next
+ */
+function resetGame(req, res, next){
+    gambling.ones = 0;
+    gambling.zeros = 0;
+}
+
+server.use('/gamble/reset', resetGame);
+
+/**
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+function buttonClickResult(req, res, next){
+    res.status(200).json(gambling);
+    var gamblingDict = {1: 'ones', 0: 'zeros'};
+    if(!gamblingDict.hasOwnProperty(req.params.chosenNumber)){
+        next();
+    }
+    var currentChoice = gamblingDict[req.params.chosenNumber];
+    if(currentChoice)
+    {
+        gambling[currentChoice] += 1;
+    }
+}
+server.use('/gamble/:chosenNumber', buttonClickResult);
+
+
+
 //Polyfill to get easy capability to endswith for getting the file extension from ES6
 if (!String.prototype.endsWith) {
     String.prototype.endsWith = function(searchString, position) {

@@ -1,12 +1,12 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
 
-var BUILD_DIR = path.resolve(__dirname, 'public');
-var APP_DIR = path.resolve(__dirname, 'app');
-var login = path.normalize(APP_DIR + '\\login.jsx');
-var game = path.normalize(APP_DIR + '\\game.jsx');
+const BUILD_DIR = path.resolve(__dirname, 'public');
+const APP_DIR = path.resolve(__dirname, 'app');
+const login = path.resolve(APP_DIR, 'login.jsx');
+const game = path.resolve(APP_DIR, 'game.jsx');
 
-var config = {
+let config = {
     entry: {
         login,
         game
