@@ -23,8 +23,13 @@ server.start(8081, function(err){
  * @param next
  */
 function resetGame(req, res, next){
-    gambling.ones = 0;
-    gambling.zeros = 0;
+    let username = req.cookies[sessionUser];
+    if(userDatabase.has(username)){
+        gambling.ones = 0;
+        gambling.zeros = 0;
+    } else{
+        res.status(403).send(STATUS_CODES[403]);
+    }
 }
 
 /**
@@ -34,7 +39,7 @@ function resetGame(req, res, next){
  * @param next
  */
 function buttonClickResult(req, res, next){
-    let username = req.cookies.sessionUser;
+    let username = req.cookies[sessionUser];
     if(userDatabase.has(username)){
         res.status(200).json(gambling);
         let gamblingDict = { 1: 'ones', 0: 'zeros' };
@@ -46,7 +51,7 @@ function buttonClickResult(req, res, next){
             gambling[currentChoice] += 1;
         }
     } else{
-
+        res.status(403).send(STATUS_CODES[403]);
     }
 
 }
@@ -62,7 +67,7 @@ function treatLogin(req, res, next) {
     function redirectResponse() {
             //TODO: redirect to game
             res.cookie("sessionUser", username);
-        var newPath = "http://" + req.get("Host") + "/www/game.html";
+        let newPath = "http://" + req.get("Host") + "/www/game.html";
             console.log(newPath);
         res.set("Location", newPath);
         res.status(302).send();

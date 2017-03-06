@@ -8,7 +8,7 @@
     "build": "webpack -p && npm run convert",
     "dev": "webpack -d --watch",
     "realDev": "nodemon --watch public",
-    "convert": "babel backend -d public/ --presets es2015,stage-2",
+    "convert": "babel backend --watch -d public/ --presets es2015,stage-2",
     "start": "node public/app.js"
   },
   "author": "",
@@ -17,14 +17,19 @@
     "babel-preset-node6": "^11.0.0",
     "react": "latest",
     "react-dom": "latest",
+    "babel-cli": "^6.23.0",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "babel-preset-react": "latest",
     "webpack": "^2.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-loader": "^6.3.2",
     "babel-preset-es2015": "^6.22.0",
-    "babel-preset-stage-2": "^6.22.0",
     "babel-preset-react": "latest",
+    "babel-preset-stage-2": "^6.22.0",
     "webpack": "^2.2.1"
   }
 }

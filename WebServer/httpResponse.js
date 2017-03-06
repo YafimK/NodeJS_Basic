@@ -86,7 +86,7 @@ httpResponse.prototype.status = function (statusCode) {
  * @return {httpResponse}
  */
 httpResponse.prototype.cookie = function (name, value, options) {
-    this.cookies.name = {value: value, options: options};
+    this.cookies[name] = {value: value, options: options};
     return this;
 };
 

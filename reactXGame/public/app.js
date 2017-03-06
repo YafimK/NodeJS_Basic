@@ -3,64 +3,15 @@
 /**
  * Created by fimka on 14/02/2017.
  */
-
 var pathLib = require("path");
 var server = require("../../WebServer/hujiwebserver");
 var STATUS_CODES = require("../../WebServer/httpStandard").STATUS_CODES;
 var fs = require("fs");
-
 var userDatabase = new Map(); //super safe user database
-
-//Store the last score
 var gambling = {
     ones: 0,
     zeros: 0
 };
-
-/**
- * Button “new game” that resets the game
- * @param req
- * @param res
- * @param next
- */
-function resetGame(req, res, next) {
-    gambling.ones = 0;
-    gambling.zeros = 0;
-}
-
-server.use('/gamble/reset', resetGame);
-
-/**
- *
- * @param req
- * @param res
- * @param next
- */
-function buttonClickResult(req, res, next) {
-    res.status(200).json(gambling);
-    var gamblingDict = { 1: 'ones', 0: 'zeros' };
-    if (!gamblingDict.hasOwnProperty(req.params.chosenNumber)) {
-        next();
-    }
-    var currentChoice = gamblingDict[req.params.chosenNumber];
-    if (currentChoice) {
-        gambling[currentChoice] += 1;
-    }
-}
-server.use('/gamble/:chosenNumber', buttonClickResult);
-
-//Polyfill to get easy capability to endswith for getting the file extension from ES6
-if (!String.prototype.endsWith) {
-    String.prototype.endsWith = function (searchString, position) {
-        var subjectString = this.toString();
-        if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-            position = subjectString.length;
-        }
-        position -= searchString.length;
-        var lastIndex = subjectString.lastIndexOf(searchString, position);
-        return lastIndex !== -1 && lastIndex === position;
-    };
-}
 
 server.start(8081, function (err) {
     if (err != undefined) {
@@ -69,6 +20,73 @@ server.start(8081, function (err) {
 });
 
 /**
+ * Button “new game” that resets the game
+ * @param req
+ * @param res
+ * @param next
+ */
+function resetGame(req, res, next) {
+    var username = req.cookies[sessionUser];
+    if (userDatabase.has(username)) {
+        gambling.ones = 0;
+        gambling.zeros = 0;
+    } else {
+        res.status(403).send(STATUS_CODES[403]);
+    }
+}
+
+/**
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+function buttonClickResult(req, res, next) {
+    var username = req.cookies[sessionUser];
+    if (userDatabase.has(username)) {
+        res.status(200).json(gambling);
+        var gamblingDict = { 1: 'ones', 0: 'zeros' };
+        if (!gamblingDict.hasOwnProperty(req.params.chosenNumber)) {
+            next();
+        }
+        var currentChoice = gamblingDict[req.params.chosenNumber];
+        if (currentChoice) {
+            gambling[currentChoice] += 1;
+        }
+    } else {
+        res.status(403).send(STATUS_CODES[403]);
+    }
+}
+
+function treatLogin(req, res, next) {
+    //TODO: check if username is clear
+    //TODO: check if it's wirhout user
+    //TODO: verify it's POST
+    console.log("logging ", req.params);
+    var password = req.body || undefined; //TODO: add support in request webserver
+    var username = req.params.username || undefined;
+
+    function redirectResponse() {
+        //TODO: redirect to game
+        res.cookie("sessionUser", username);
+        var newPath = "http://" + req.get("Host") + "/www/game.html";
+        console.log(newPath);
+        res.set("Location", newPath);
+        res.status(302).send();
+    }
+
+    if (userDatabase.has(username)) {
+        if (userDatabase.get(username) === password) {
+            redirectResponse();
+        } else {
+            res.statusCode(403).send(STATUS_CODES[403]);
+        }
+    } else {
+        userDatabase.set(username, password);
+        redirectResponse();
+    }
+}
+/**
  * Serves the main page with the game
  * @param req
  * @param res
@@ -76,7 +94,6 @@ server.start(8081, function (err) {
  */
 function serveHttpFiles(req, res, next) {
     var requestedFilePath = "";
-
     if (req.path === "/") {
         console.log(__dirname);
         requestedFilePath = "/www/Login.html";
@@ -108,27 +125,11 @@ function serveHttpFiles(req, res, next) {
     });
 }
 
-server.use("/app/*", serveHttpFiles);
+server.use('/gamble/reset', resetGame);
+server.use('/gamble/:chosenNumber', buttonClickResult);
 
-server.use(serveHttpFiles);
+server.use("/login/:username/", treatLogin);
 
-function treatLogin(req, res, next) {
-    //TODO: check if username is clear
-    //TODO: check if it's wirhout user
-    //TODO: verify it's POST
-    var password = ""; //TODO: add support in request webserver
-    var username = req.param.username || undefined;
-    if (userDatabase.has(username)) {
-        if (userDatabase.get(username) === password) {
-            //TODO: redirect to game
-            res.cookie("sessionUser", username);
-            var newPath = req.host + "/www/public.html";
-            var body = "<script> window.location.replace(" + newPath + "); </script>";
-        } else {
-            res.statusCode(403).send(STATUS_CODES[403]);
-        }
-    } else {
-        userDatabase.set(username, password);
-    }
-}
-server.use("/login/:username", treatLogin);
+server.use("/public/*", serveHttpFiles);
+
+server.use("/www/*", serveHttpFiles);
