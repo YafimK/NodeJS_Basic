@@ -21,6 +21,7 @@ export default class GameView extends React.Component{
         self =this;
         let xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
+
         xhr.onload = function(e) {
             if (this.status == 200) {
                 console.log(this.response);
