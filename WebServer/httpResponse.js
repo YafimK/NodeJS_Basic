@@ -138,7 +138,7 @@ httpResponse.prototype.getCookieHeader = function () {
             cookieHeader += key + '=' + value.value;
             for (var option in value.options) {
                 if (value.options.hasOwnProperty(option)) {
-                    cookieHeader += ';' + value.options[option];
+                    cookieHeader += ';' + option + "=" + value.options[option];
                 }
             }
             cookieHeader += '\r\n';
@@ -163,6 +163,11 @@ httpResponse.prototype.getHeadersBody = function () {
 };
 
 httpResponse.prototype.send = function (content) {
+    this.writeResponse(content);
+    return this;
+};
+
+httpResponse.prototype.sendFile = function (content) {
     this.writeResponse(content);
     return this;
 };

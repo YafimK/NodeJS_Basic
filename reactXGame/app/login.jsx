@@ -67,10 +67,10 @@ class Login extends React.Component {
             </form>);
 
         } else {
-            setTimeout(self.redirectUrl, 15000, self.state.redirectUrl );
+            setTimeout(self.redirectUrl, 5000, self.state.redirectUrl );
             return (
                 <div>
-                <h1> You're already logged in - redirecting to the game in 15 sec ({self.state.redirectUrl})</h1>
+                <h1> You're logged in - redirecting to the game in 5 sec ({self.state.redirectUrl})</h1>
                 </div>
             );
         }

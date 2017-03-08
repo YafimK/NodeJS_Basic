@@ -24,20 +24,24 @@ export default class GameView extends React.Component{
     onVoteClick(event){
         let chosen = event.target.value;
         //TODO: check vote
-        console.log(" GPressed: " + chosen);
+        let cookieStore = document.cookie;
+        let cookieValue = cookieStore.replace(/(?:(?:^|.*;\s*)sessionUser\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        console.log(cookieStore,cookieValue);
+        // console.log(" GPressed: " + chosen);
         let url = "/gamble/" + chosen;
         self = this;
         let xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
-
+        xhr.withCredentials = true;
         xhr.onload = function(e) {
-            if (this.status === 200) {
+            console.log(this.status);
+            if (this.status == 200) {
                 console.log(this.response);
                 let response = JSON.parse(this.response);
                 console.log(response);
 
                 self.setState({LoggedIn: true, gameStage: 'Results', results: response, chosenButton: chosen});
-            } else if (this.status === 403) {
+            } else if (this.status == 403) {
                 console.log(this.response);
                 self.setState({LoggedIn: false, gameStage: 'Results', results: {}, chosenButton: chosen});
             } else{
@@ -50,16 +54,17 @@ export default class GameView extends React.Component{
     }
     onResetGameClick(event){
         console.log("Reseting");
-        // this.setState({LoggedIn: false, gameStage: 'Reset', results: {}, chosenButton: -1});
         let xhr = new XMLHttpRequest();
         xhr.open("DELETE", "/gamble/reset", true);
-        self=this;
+        self = this;
+        xhr.withCredentials = true;
         xhr.onload = function(e) {
-            if (this.status === 200) {
+            console.log(this.status);
+            if (this.status == 200) {
                 console.log(this.response);
                 console.log("reseting");
                 self.setState({LoggedIn: true, gameStage: 'Reset', results: {}, chosenButton: -1});
-            } else if (this.status === 403) {
+            } else if (this.status == 403) {
                 console.log(this.response);
                 self.setState({LoggedIn: false, gameStage: 'Results', results: {}, chosenButton: -1});
             } else{
@@ -80,7 +85,8 @@ export default class GameView extends React.Component{
                 currentStage = <GameResultView results={this.state.results} chosenButton={this.state.chosenButton}/>
             }
         }else{
-            gameMenu = <h1>HTTP403 Forbidden - access forbidden </h1>
+            gameMenu = <div><h1>HTTP403 Forbidden - access forbidden </h1>
+                Please login.</div>
         }
 
         return (<div>

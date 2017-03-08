@@ -26,12 +26,14 @@ server.start(8081, function (err) {
  * @param next
  */
 function resetGame(req, res, next) {
-    var username = req.cookies[sessionUser];
+    var username = req.cookies['sessionUser'];
     if (userDatabase.has(username)) {
         gambling.ones = 0;
         gambling.zeros = 0;
+        res.status(200).send(STATUS_CODES[200]);
     } else {
-        res.status(403).send(STATUS_CODES[403]);
+        var newPath = "http://" + req.get("Host") + "/www/login.html";
+        res.status(403).set("Location", newPath).send(STATUS_CODES[403]);
     }
 }
 
@@ -42,7 +44,7 @@ function resetGame(req, res, next) {
  * @param next
  */
 function buttonClickResult(req, res, next) {
-    var username = req.cookies[sessionUser];
+    var username = req.cookies['sessionUser'];
     if (userDatabase.has(username)) {
         res.status(200).json(gambling);
         var gamblingDict = { 1: 'ones', 0: 'zeros' };
@@ -54,7 +56,8 @@ function buttonClickResult(req, res, next) {
             gambling[currentChoice] += 1;
         }
     } else {
-        res.status(403).send(STATUS_CODES[403]);
+        var newPath = "http://" + req.get("Host") + "/www/login.html";
+        res.status(403).set("Location", newPath).send(STATUS_CODES[403]);
     }
 }
 
@@ -68,7 +71,9 @@ function treatLogin(req, res, next) {
 
     function redirectResponse() {
         //TODO: redirect to game
-        res.cookie("sessionUser", username);
+        var cookiePath = "/";
+        var domain = req.host;
+        res.cookie("sessionUser", username, { Path: cookiePath, Domain: domain });
         var newPath = "http://" + req.get("Host") + "/www/game.html";
         console.log(newPath);
         res.set("Location", newPath);
@@ -79,7 +84,8 @@ function treatLogin(req, res, next) {
         if (userDatabase.get(username) === password) {
             redirectResponse();
         } else {
-            res.statusCode(403).send(STATUS_CODES[403]);
+            var newPath = "http://" + req.get("Host") + "/www/login.html";
+            res.status(403).set("Location", newPath).send(STATUS_CODES[403]);
         }
     } else {
         userDatabase.set(username, password);
