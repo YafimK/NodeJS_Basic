@@ -5563,10 +5563,28 @@ const STATUS_CODES = {
     511: 'Network Authentication Required' // RFC 6585
 };
 
-
+var mimeTypeFinder = function(ext){
+    "use strict";
+    var mimeTypeListLength = MimeTypes.length;
+    var contentType = "text/html";
+    for(var i=0; i < mimeTypeListLength; i++){
+        //lookup extensions
+        var mimeTypeExt = MimeTypes[i].extensions;
+        if(mimeTypeExt){
+            var mimeExtListLength = mimeTypeExt.length;
+            for(var j=0; j < mimeExtListLength; j++){
+                if(ext === mimeTypeExt[j]){
+                    return MimeTypes[i];
+                }
+            }
+        }
+    }
+    return contentType;
+};
 
 module.exports = {
     MIME_TYPES: MimeTypes,
-    STATUS_CODES: STATUS_CODES
+    STATUS_CODES: STATUS_CODES,
+    mimeTypeFinder: mimeTypeFinder
 
 };

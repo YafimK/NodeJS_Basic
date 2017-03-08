@@ -109,26 +109,10 @@ function serveHttpFiles(req, res, next) {
 
     // requestedFilePath = '/www/' + requestedFilePath;
     requestedFilePath = __dirname + "/../" + requestedFilePath;
+    console.log("vv", requestedFilePath);
     requestedFilePath = pathLib.normalize(requestedFilePath);
-    console.log(requestedFilePath);
-    fs.readFile(requestedFilePath, function (err, data) {
-        if (err) {
-            res.status(500).send(STATUS_CODES[500]);
-            console.log(err);
-            return;
-        }
-
-        if (requestedFilePath.endsWith('css')) {
-            res.set('content-type', 'text/css');
-        } else if (requestedFilePath.endsWith('js')) {
-            res.set('content-type', 'application/javascript');
-        } else if (requestedFilePath.endsWith('html')) {
-            res.set('content-type', 'text/html');
-        }
-
-        res.set('content-length', data.toString());
-        res.status(200).send(data.toString());
-    });
+    console.log("cc",requestedFilePath);
+    res.sendFile(requestedFilePath);
 }
 
 server.use('/gamble/reset', resetGame);

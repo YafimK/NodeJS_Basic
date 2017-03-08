@@ -2,18 +2,25 @@
  * Created by fimka on 14/01/2017.
  */
 var STATUS_CODES = require('./httpStandard').STATUS_CODES;
+var mimeTypeFinder = require('./httpStandard').mimeTypeFinder;
+var pathLib = require("path");
+var readFile = require("fs").readFile;
 
 // set(), status(), get() , cookie(), send() and json() .
 var httpResponse = function (socket, httpType) {
     this.socket = socket;
     this.httpType = httpType;
 };
-
+httpResponse.prototype.socket = undefined;
 httpResponse.prototype.cookies = {};
 httpResponse.prototype.headers = {};
 httpResponse.prototype.body = '';
 httpResponse.prototype.statusCode = 200;
 httpResponse.prototype.statusMsg = 'OK';
+httpResponse.prototype.resContent = new Buffer('');
+
+
+
 
 /**
  * get header value
@@ -163,12 +170,39 @@ httpResponse.prototype.getHeadersBody = function () {
 };
 
 httpResponse.prototype.send = function (content) {
-    this.writeResponse(content);
+    if(content){
+        this.writeResponse(content);
+    }
+    this.socket.write(this.getStatusLine());
+    this.socket.write(this.getHeadersBody());
+    this.socket.write(this.getCookieHeader());
+    this.socket.write('\r\n');
+    this.socket.write(this.resContent);
+    this.socket.end();
     return this;
 };
 
-httpResponse.prototype.sendFile = function (content) {
-    this.writeResponse(content);
+httpResponse.prototype.sendFile = function (relPath) {
+    var requestedFilePath = relPath;
+    requestedFilePath = pathLib.normalize(requestedFilePath);
+    readFile(requestedFilePath, readFileCallback.bind(this));
+
+    function readFileCallback(err, data) {
+        if (err) {
+            this.status(500);
+            content = STATUS_CODES[500];
+            this.setContentType("text/html");
+            this.setContentLength(data);
+            return;
+        } else {
+            var fileExt = pathLib.extname(relPath).replace('.', "");
+            var contentType = mimeTypeFinder(fileExt);
+            this.setContentType(contentType);
+            this.setContentLength(data);
+            this.resContent = new Buffer(data);
+            this.send();
+        }
+    }
     return this;
 };
 
@@ -232,13 +266,6 @@ httpResponse.prototype.writeResponse = function (content) {
     }
 
     this.setContentLength(content);
-
-    this.socket.write(this.getStatusLine());
-    this.socket.write(this.getHeadersBody());
-    this.socket.write(this.getCookieHeader());
-    this.socket.write('\r\n');
-    this.socket.write(content);
-    this.socket.end();
     return this;
 };
 
