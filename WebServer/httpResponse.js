@@ -4,12 +4,15 @@
 var STATUS_CODES = require('./httpStandard').STATUS_CODES;
 var mimeTypeFinder = require('./httpStandard').mimeTypeFinder;
 var pathLib = require("path");
-var readFile = require("fs").readFile;
+var fs = require("fs");
+const EventEmitter = require('events');
 
 // set(), status(), get() , cookie(), send() and json() .
 var httpResponse = function (socket, httpType) {
     this.socket = socket;
     this.httpType = httpType;
+    self = this;
+    this.eventEmitter.on('fileReadyToSend', self.send.bind(this));
 };
 httpResponse.prototype.socket = undefined;
 httpResponse.prototype.cookies = {};
@@ -18,7 +21,7 @@ httpResponse.prototype.body = '';
 httpResponse.prototype.statusCode = 200;
 httpResponse.prototype.statusMsg = 'OK';
 httpResponse.prototype.resContent = new Buffer('');
-
+httpResponse.prototype.eventEmitter = new EventEmitter();
 
 
 
@@ -39,7 +42,9 @@ httpResponse.prototype.json = function (body) {
     //application/json
     this.setContentType('application/json');
     //return create body as json.
-    return this.writeResponse(JSON.stringify(body));
+    this.writeResponse(JSON.stringify(body))
+    return this.send();
+
 };
 
 /**
@@ -185,7 +190,10 @@ httpResponse.prototype.send = function (content) {
 httpResponse.prototype.sendFile = function (relPath) {
     var requestedFilePath = relPath;
     requestedFilePath = pathLib.normalize(requestedFilePath);
-    readFile(requestedFilePath, readFileCallback.bind(this));
+    var self =this;
+    fs.stat(requestedFilePath, function() {
+        fs.readFile(requestedFilePath, readFileCallback.bind(self))
+    }.bind(self));
 
     function readFileCallback(err, data) {
         if (err) {
@@ -200,9 +208,11 @@ httpResponse.prototype.sendFile = function (relPath) {
             this.setContentType(contentType);
             this.setContentLength(data);
             this.resContent = new Buffer(data);
+            // this.eventEmitter.emit('fileReadyToSend');
             this.send();
         }
     }
+
     return this;
 };
 
@@ -251,21 +261,21 @@ httpResponse.prototype.writeResponse = function (content) {
     if (!content || content === null) {
         content = '';
     }
-    
     this.checkContentType(content);
 
     if (typeof content === 'object') {
         content = JSON.stringify(content);
     }
-
     if (204 === this.statusCode || 304 === this.statusCode) {
         this.removeHeader('content-type');
         this.removeHeader("content-length");
         this.removeHeader('transfer-encoding');
         content = '';
     }
+    this.resContent = new Buffer(content);
 
     this.setContentLength(content);
+
     return this;
 };
 

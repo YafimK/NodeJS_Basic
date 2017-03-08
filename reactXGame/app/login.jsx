@@ -10,25 +10,25 @@ class Login extends React.Component {
     }
 
     onLoginClick(event) {
-        console.log(this.state);
-
-        console.log(event.target.user.value);
-        console.log(event.target.pass.value);
+        // console.log(this.state);
+        //
+        // console.log(event.target.user.value);
+        // console.log(event.target.pass.value);
         //TODO: check fields are not empty
         let user = event.target.user.value || "noUser";
         let password = event.target.pass.value || "";
         let url = "/login/" + user;
-        console.log(url);
+        // console.log(url);
         let self = this;
         let xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
         xhr.onreadystatechange = function () {
-            console.log("im here",xhr.readyState, xhr.responseURL, xhr.status);
+            // /**/console.log("im here",xhr.readyState, xhr.responseURL, xhr.status);
 
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log("entered ",this.response,url);
+                // console.log("entered ",this.response,url);
                 if (url != xhr.responseURL) {
-                    console.log("redirect detected to: " + xhr.responseURL);
+                    // console.log("redirect detected to: " + xhr.responseURL);
                 }
                 self.setState({loggedIn: true, redirectUrl: xhr.responseURL});
 
@@ -36,7 +36,7 @@ class Login extends React.Component {
 
             } else if(xhr.readyState === XMLHttpRequest.DONE){
                 let e = "";
-                console.log("We got an error receiving the gamble - " + e);
+                // console.log("We got an error receiving the gamble - " + e);
             }
         };
         xhr.send(password);
@@ -50,7 +50,7 @@ class Login extends React.Component {
 
     render() {
         let self = this;
-        console.log(this.state);
+        // console.log(this.state);
         if(this.state.loggedIn === false){
             return (<form action="/" onSubmit={self.onLoginClick}>
                 <label>

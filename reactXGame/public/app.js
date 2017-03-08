@@ -102,16 +102,12 @@ function serveHttpFiles(req, res, next) {
     var requestedFilePath = "";
     if (req.path === "/") {
         console.log(__dirname);
-        requestedFilePath = "/www/Login.html";
+        requestedFilePath = "/www/login.html";
     } else {
         requestedFilePath = req.path;
     }
-
-    // requestedFilePath = '/www/' + requestedFilePath;
-    requestedFilePath = __dirname + "/../" + requestedFilePath;
-    console.log("vv", requestedFilePath);
+    requestedFilePath = __dirname +"/../" +requestedFilePath;
     requestedFilePath = pathLib.normalize(requestedFilePath);
-    console.log("cc",requestedFilePath);
     res.sendFile(requestedFilePath);
 }
 

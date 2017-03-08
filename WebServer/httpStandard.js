@@ -5565,16 +5565,15 @@ const STATUS_CODES = {
 
 var mimeTypeFinder = function(ext){
     "use strict";
-    var mimeTypeListLength = MimeTypes.length;
+    var mimeTypeListLength = Object.keys(MimeTypes).length;
     var contentType = "text/html";
-    for(var i=0; i < mimeTypeListLength; i++){
+    for(var i in MimeTypes){
         //lookup extensions
         var mimeTypeExt = MimeTypes[i].extensions;
         if(mimeTypeExt){
-            var mimeExtListLength = mimeTypeExt.length;
-            for(var j=0; j < mimeExtListLength; j++){
+            for(var j in mimeTypeExt){
                 if(ext === mimeTypeExt[j]){
-                    return MimeTypes[i];
+                    return i;
                 }
             }
         }

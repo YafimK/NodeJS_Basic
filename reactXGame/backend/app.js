@@ -96,35 +96,15 @@ function treatLogin(req, res, next) {
  */
 function serveHttpFiles(req, res, next){
     let requestedFilePath = "";
-    if(req.path === "/"){
+    if (req.path === "/") {
         console.log(__dirname);
-        requestedFilePath = "/www/Login.html";
+        requestedFilePath = "/www/login.html";
     } else {
         requestedFilePath = req.path;
     }
 
-    // requestedFilePath = '/www/' + requestedFilePath;
-    requestedFilePath = __dirname + "/../"+ requestedFilePath;
     requestedFilePath = pathLib.normalize(requestedFilePath);
-    console.log(requestedFilePath);
-    fs.readFile(requestedFilePath, function (err, data) {
-        if (err) {
-            res.status(500).send(STATUS_CODES[500]);
-            console.log(err);
-            return;
-        }
-
-        if(requestedFilePath.endsWith('css')){
-            res.set('content-type', 'text/css');
-        } else if(requestedFilePath.endsWith('js')) {
-            res.set('content-type', 'application/javascript');
-        } else if (requestedFilePath.endsWith('html')) {
-            res.set('content-type', 'text/html');
-        }
-
-        res.set('content-length', data.toString());
-        res.status(200).send(data.toString());
-    });
+    res.sendFile(requestedFilePath);
 
 }
 
