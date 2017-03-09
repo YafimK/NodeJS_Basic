@@ -12,7 +12,6 @@ var httpResponse = function (socket, httpType) {
     this.socket = socket;
     this.httpType = httpType;
     self = this;
-    this.eventEmitter.on('fileReadyToSend', self.send.bind(this));
 };
 httpResponse.prototype.socket = undefined;
 httpResponse.prototype.cookies = {};
@@ -174,44 +173,49 @@ httpResponse.prototype.getHeadersBody = function () {
     return headerBody;
 };
 
-httpResponse.prototype.send = function (content) {
-    if(content){
-        this.writeResponse(content);
-    }
+httpResponse.prototype.pushResponseToSocket = function() {
     this.socket.write(this.getStatusLine());
     this.socket.write(this.getHeadersBody());
     this.socket.write(this.getCookieHeader());
     this.socket.write('\r\n');
     this.socket.write(this.resContent);
+}
+
+httpResponse.prototype.send = function (content) {
+    if(content){
+        this.writeResponse(content);
+    }
+    this.pushResponseToSocket.call(this);
     this.socket.end();
     return this;
 };
 
 httpResponse.prototype.sendFile = function (relPath) {
+    //TODO: add check argument
     var requestedFilePath = relPath;
     requestedFilePath = pathLib.normalize(requestedFilePath);
-    var self =this;
-    fs.stat(requestedFilePath, function() {
-        fs.readFile(requestedFilePath, readFileCallback.bind(self))
-    }.bind(self));
-
-    function readFileCallback(err, data) {
+    var self = this;
+    fs.stat(requestedFilePath, function(err, stats) {
         if (err) {
             this.status(500);
-            content = STATUS_CODES[500];
+            content = STATUS_CODES[500] + ":  "+ err;
             this.setContentType("text/html");
-            this.setContentLength(data);
+            this.setContentLength(content);
             return;
-        } else {
-            var fileExt = pathLib.extname(relPath).replace('.', "");
-            var contentType = mimeTypeFinder(fileExt);
-            this.setContentType(contentType);
-            this.setContentLength(data);
-            this.resContent = new Buffer(data);
-            // this.eventEmitter.emit('fileReadyToSend');
-            this.send();
         }
-    }
+
+        self.status(200);
+        var fileExt = pathLib.extname(relPath).replace('.', "");
+        var contentType = mimeTypeFinder(fileExt);
+        self.setContentType(contentType);
+        self.set("content-length", stats.size);
+
+        self.resContent = new Buffer('');
+        self.pushResponseToSocket();
+        var fileStream  = fs.createReadStream(requestedFilePath);
+        fileStream.pipe(self.socket);
+    }.bind(self));
+    self.socket.isDataSent = true;
 
     return this;
 };

@@ -5566,7 +5566,7 @@ const STATUS_CODES = {
 var mimeTypeFinder = function(ext){
     "use strict";
     var mimeTypeListLength = Object.keys(MimeTypes).length;
-    var contentType = "text/html";
+    var contentType = "application/octet-stream";
     for(var i in MimeTypes){
         //lookup extensions
         var mimeTypeExt = MimeTypes[i].extensions;

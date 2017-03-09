@@ -27,6 +27,7 @@ function resetGame(req, res, next){
     if(userDatabase.has(username)){
         gambling.ones = 0;
         gambling.zeros = 0;
+        res.status(200).send(STATUS_CODES[200]);
     } else{
         let newPath = "http://" + req.get("Host") + "/www/login.html";
         res.status(403).set("Location", newPath).send(STATUS_CODES[403]);    }
@@ -68,7 +69,7 @@ function treatLogin(req, res, next) {
     function redirectResponse() {
             //TODO: redirect to game
         let cookiePath = "/";
-        let domain = req.get("Host");
+        let domain = req.host;
             res.cookie("sessionUser", username,{Path: cookiePath, Domain: domain});
         let newPath = "http://" + req.get("Host") + "/www/game.html";
             console.log(newPath);
@@ -103,6 +104,8 @@ function serveHttpFiles(req, res, next){
         requestedFilePath = req.path;
     }
 
+    // requestedFilePath = '/www/' + requestedFilePath;
+    requestedFilePath = __dirname + "/../"+ requestedFilePath;
     requestedFilePath = pathLib.normalize(requestedFilePath);
     res.sendFile(requestedFilePath);
 

@@ -106,7 +106,9 @@ function serveHttpFiles(req, res, next) {
     } else {
         requestedFilePath = req.path;
     }
-    requestedFilePath = __dirname +"/../" +requestedFilePath;
+
+    // requestedFilePath = '/www/' + requestedFilePath;
+    requestedFilePath = __dirname + "/../" + requestedFilePath;
     requestedFilePath = pathLib.normalize(requestedFilePath);
     res.sendFile(requestedFilePath);
 }
